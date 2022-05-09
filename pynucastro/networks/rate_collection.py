@@ -22,7 +22,7 @@ import networkx as nx
 from pynucastro.nucleus import Nucleus
 from pynucastro.rates import Rate, RatePair, Library
 
-mpl.rcParams['figure.dpi'] = 100
+# mpl.rcParams['figure.dpi'] = 100
 
 
 class Composition:
@@ -624,7 +624,7 @@ class RateCollection:
         G.position = {}
         G.labels = {}
 
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(dpi=dpi)
         #divider = make_axes_locatable(ax)
         #cax = divider.append_axes('right', size='15%', pad=0.05)
 
@@ -923,7 +923,7 @@ class RateCollection:
             warnings.warn(f"Unrecognized keyword arguments: {kwargs.keys()}")
 
         # Get figure, colormap
-        fig, ax = plt.subplots()
+        fig, ax = plt.subplots(dpi=dpi)
         cmap = mpl.cm.get_cmap(cmap)
 
         # Get nuclei and all 3 numbers
