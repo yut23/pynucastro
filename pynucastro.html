@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pynucastro package &mdash; pynucastro 1.6.0.post93+g1e8a89c documentation</title>
+  <title>pynucastro package &mdash; pynucastro 1.6.0.post125+g795a4c3 documentation</title>
       <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,6 +15,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -31,6 +32,7 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
             <a href="index.html" class="icon icon-home"> pynucastro
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 1.6
@@ -43,17 +45,35 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul class="current">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Overview of pynucastro</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Exploring Networks in Python</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="pynucastro-examples.html">pynucastro usage examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot-types.html">Plotting Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pynucastro-integration.html">Example of integrating a network</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Selecting Rates</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="library-examples.html">Selecting Rates from a Library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modify-example.html">Modifying Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="validate-example.html">Checking your network</a></li>
 <li class="toctree-l1"><a class="reference internal" href="electron-captures.html">Combining ReacLib Rates with Electron Capture Tables</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modify-example.html">Modifying Rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="approx-rates-examples.html">Approximate Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="partition-function.html">Reverse Rates</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Writing Networks</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="networks.html">Creating Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cxx-networks.html">C++ Networks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul class="current">
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">API</a><ul class="current">
 <li class="toctree-l2 current"><a class="current reference internal" href="#">pynucastro package</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#library">library</a></li>
@@ -67,6 +87,7 @@
 <li class="toctree-l4"><a class="reference internal" href="pynucastro.nucdata.html">pynucastro.nucdata package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pynucastro.nucleus.html">pynucastro.nucleus package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pynucastro.rates.html">pynucastro.rates package</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pynucastro.screening.html">pynucastro.screening package</a></li>
 </ul>
 </li>
 </ul>
@@ -126,7 +147,7 @@
 }
 </style>
 <section id="module-pynucastro">
-<span id="pynucastro-package"></span><h1>pynucastro package<a class="headerlink" href="#module-pynucastro" title="Permalink to this headline">¶</a></h1>
+<span id="pynucastro-package"></span><h1>pynucastro package<a class="headerlink" href="#module-pynucastro" title="Permalink to this heading">¶</a></h1>
 <p>pynucastro is a python module that interprets the nuclear reaction rates,
 including those cataloged by the JINA ReacLib project:</p>
 <p><a class="reference external" href="https://groups.nscl.msu.edu/jina/reaclib/db/">https://groups.nscl.msu.edu/jina/reaclib/db/</a></p>
@@ -137,7 +158,7 @@ routines.</p>
 <p>Several different packages provide the data structures needed to
 interpret rates and build networks.</p>
 <section id="library">
-<h2>library<a class="headerlink" href="#library" title="Permalink to this headline">¶</a></h2>
+<h2>library<a class="headerlink" href="#library" title="Permalink to this heading">¶</a></h2>
 <p>library stores Reaclib rate files in Reaclib 1 or 2 formats as well as the
 directory <cite>library/tabular</cite> containing tabulated rates. pynucastro
 will search these directories for rate files as well as the current
@@ -147,7 +168,7 @@ JINA ReacLib project and placing them in the library folder. They must
 be in the Reaclib 1 format.</p>
 </section>
 <section id="nucdata">
-<h2>nucdata<a class="headerlink" href="#nucdata" title="Permalink to this headline">¶</a></h2>
+<h2>nucdata<a class="headerlink" href="#nucdata" title="Permalink to this heading">¶</a></h2>
 <p>nucdata provides:</p>
 <ul class="simple">
 <li><p>Nucleus : a single nucleus, with a descriptive name and its
@@ -163,7 +184,7 @@ Mass Evaluation tables and generating binding energy tables for pynucastro
 are provided in <cite>pynucastro/nucdata/AtomicMassEvaluation</cite>.</p>
 </section>
 <section id="networks">
-<h2>networks<a class="headerlink" href="#networks" title="Permalink to this headline">¶</a></h2>
+<h2>networks<a class="headerlink" href="#networks" title="Permalink to this heading">¶</a></h2>
 <p>networks provides classes and functions for organizing collection of
 rates, including:</p>
 <ul class="simple">
@@ -190,7 +211,7 @@ Microphysics repository.</p></li>
 </ul>
 </section>
 <section id="rates">
-<h2>rates<a class="headerlink" href="#rates" title="Permalink to this headline">¶</a></h2>
+<h2>rates<a class="headerlink" href="#rates" title="Permalink to this heading">¶</a></h2>
 <p>rates provides classes and functions for interpreting individual
 reaction rates, including:</p>
 <ul class="simple">
@@ -208,7 +229,7 @@ desired rate or group of rates from a RateLibrary.</p></li>
 </ul>
 </section>
 <section id="screening">
-<h2>screening<a class="headerlink" href="#screening" title="Permalink to this headline">¶</a></h2>
+<h2>screening<a class="headerlink" href="#screening" title="Permalink to this heading">¶</a></h2>
 <p>screening provides routines used by the BaseFortranNetwork and
 BaseCxxNetwork to screen Reaclib reaction rates in the weak,
 intermediate, and strong regimes. Tabulated rates are not screened.</p>
@@ -218,7 +239,7 @@ rate screening, but they use the screening module in the StarKiller
 Microphysics repository.</p>
 </section>
 <section id="templates">
-<h2>templates<a class="headerlink" href="#templates" title="Permalink to this headline">¶</a></h2>
+<h2>templates<a class="headerlink" href="#templates" title="Permalink to this heading">¶</a></h2>
 <p>templates contains subdirectories for generating BaseFortranNetwork,
 StarKillerNetwork Fortran modules, and StarKillerCxxNetwork C++ files
 implementing the ODE right hand side, jacobian, and integration driver
@@ -227,7 +248,7 @@ of the form <cite>&lt;tag&gt;</cite> with generated code specific to a given cho
 reaction rates.</p>
 </section>
 <section id="subpackages">
-<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this heading">¶</a></h2>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="pynucastro.networks.html">pynucastro.networks package</a><ul>
@@ -259,6 +280,11 @@ reaction rates.</p>
 <li class="toctree-l2"><a class="reference internal" href="pynucastro.rates.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pynucastro.rates.html#module-pynucastro.rates.library">pynucastro.rates.library module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pynucastro.rates.html#module-pynucastro.rates.rate">pynucastro.rates.rate module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pynucastro.screening.html">pynucastro.screening package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pynucastro.screening.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pynucastro.screening.html#module-pynucastro.screening.screen">pynucastro.screening.screen module</a></li>
 </ul>
 </li>
 </ul>

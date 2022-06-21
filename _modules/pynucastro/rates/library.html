@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pynucastro.rates.library &mdash; pynucastro 1.6.0.post93+g1e8a89c documentation</title>
+  <title>pynucastro.rates.library &mdash; pynucastro 1.6.0.post125+g795a4c3 documentation</title>
       <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,6 +14,7 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -28,6 +29,7 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
             <a href="../../../index.html" class="icon icon-home"> pynucastro
+            <img src="../../../_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 1.6
@@ -40,17 +42,35 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Overview of pynucastro</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Exploring Networks in Python</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../pynucastro-examples.html">pynucastro usage examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot-types.html">Plotting Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pynucastro-integration.html">Example of integrating a network</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Selecting Rates</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../library-examples.html">Selecting Rates from a Library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modify-example.html">Modifying Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../validate-example.html">Checking your network</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../electron-captures.html">Combining ReacLib Rates with Electron Capture Tables</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modify-example.html">Modifying Rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../approx-rates-examples.html">Approximate Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../partition-function.html">Reverse Rates</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Writing Networks</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../networks.html">Creating Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cxx-networks.html">C++ Networks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources.html">Third Party Data</a></li>
 </ul>
@@ -86,6 +106,7 @@
 
 <span class="kn">from</span> <span class="nn">pynucastro.nucleus</span> <span class="kn">import</span> <span class="n">Nucleus</span><span class="p">,</span> <span class="n">UnsupportedNucleus</span>
 <span class="kn">from</span> <span class="nn">pynucastro.rates</span> <span class="kn">import</span> <span class="n">Rate</span><span class="p">,</span> <span class="n">_find_rate_file</span>
+<span class="kn">from</span> <span class="nn">pynucastro.rates.rate</span> <span class="kn">import</span> <span class="n">DerivedRate</span>
 
 
 <div class="viewcode-block" id="list_known_rates"><a class="viewcode-back" href="../../../pynucastro.rates.html#pynucastro.rates.library.list_known_rates">[docs]</a><span class="k">def</span> <span class="nf">list_known_rates</span><span class="p">():</span>
@@ -278,9 +299,20 @@
         <span class="sd">&quot;&quot;&quot; Return a rate matching the id provided. &quot;&quot;&quot;</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rates</span><span class="p">[</span><span class="n">rid</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+        <span class="c1"># fallback to the rate fname</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">r</span> <span class="o">=</span> <span class="p">[</span><span class="n">q</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rates</span><span class="p">()</span> <span class="k">if</span> <span class="n">q</span><span class="o">.</span><span class="n">fname</span> <span class="o">==</span> <span class="n">rid</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">r</span>
         <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: rate identifier does not match a rate in this library.&quot;</span><span class="p">)</span>
             <span class="k">raise</span></div>
+
+<div class="viewcode-block" id="Library.get_nuclei"><a class="viewcode-back" href="../../../pynucastro.rates.html#pynucastro.rates.library.Library.get_nuclei">[docs]</a>    <span class="k">def</span> <span class="nf">get_nuclei</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;get the list of unique nuclei&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">nuc</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_rates</span><span class="p">()</span> <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">reactants</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="n">products</span><span class="p">}</span></div>
 
 <div class="viewcode-block" id="Library.diff"><a class="viewcode-back" href="../../../pynucastro.rates.html#pynucastro.rates.library.Library.diff">[docs]</a>    <span class="k">def</span> <span class="nf">diff</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other_library</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Return a Library containing the rates in this library that are not</span>
@@ -340,8 +372,16 @@
             <span class="k">if</span> <span class="n">include</span><span class="p">:</span>
                 <span class="n">filtered_rates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
 
-        <span class="c1"># Return library containing the filtered rates</span>
-        <span class="k">return</span> <span class="n">Library</span><span class="p">(</span><span class="n">rates</span><span class="o">=</span><span class="n">filtered_rates</span><span class="p">)</span></div>
+        <span class="c1"># create a new library containing the filtered rates</span>
+        <span class="n">new_lib</span> <span class="o">=</span> <span class="n">Library</span><span class="p">(</span><span class="n">rates</span><span class="o">=</span><span class="n">filtered_rates</span><span class="p">)</span>
+
+        <span class="c1"># print out a warning if one of the input nuclei is not linked</span>
+        <span class="n">lib_nuclei</span> <span class="o">=</span> <span class="n">new_lib</span><span class="o">.</span><span class="n">get_nuclei</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="n">nucleus_set</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">nuc</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">lib_nuclei</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;warning </span><span class="si">{</span><span class="n">nuc</span><span class="si">}</span><span class="s2"> was not able to be linked&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">new_lib</span></div>
 
 <div class="viewcode-block" id="Library.filter"><a class="viewcode-back" href="../../../pynucastro.rates.html#pynucastro.rates.library.Library.filter">[docs]</a>    <span class="k">def</span> <span class="nf">filter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filter_spec</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -456,12 +496,39 @@
 
         <span class="n">only_bwd_filter</span> <span class="o">=</span> <span class="n">RateFilter</span><span class="p">(</span><span class="n">filter_function</span><span class="o">=</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">reverse</span><span class="p">)</span>
         <span class="n">only_bwd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="n">only_bwd_filter</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">only_bwd</span></div></div>
+        <span class="k">return</span> <span class="n">only_bwd</span></div>
+
+<div class="viewcode-block" id="Library.derived_forward"><a class="viewcode-back" href="../../../pynucastro.rates.html#pynucastro.rates.library.Library.derived_forward">[docs]</a>    <span class="k">def</span> <span class="nf">derived_forward</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+
+        <span class="n">collect_rates</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">onlyfwd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">forward</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">onlyfwd</span><span class="o">.</span><span class="n">get_rates</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">DerivedRate</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">use_pf</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">use_A_nuc</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="n">collect_rates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
+
+        <span class="n">list1</span> <span class="o">=</span> <span class="n">Library</span><span class="p">(</span><span class="n">rates</span><span class="o">=</span><span class="n">collect_rates</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">list1</span></div>
+
+<div class="viewcode-block" id="Library.derived_backward"><a class="viewcode-back" href="../../../pynucastro.rates.html#pynucastro.rates.library.Library.derived_backward">[docs]</a>    <span class="k">def</span> <span class="nf">derived_backward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">use_pf</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_A_nuc</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+
+        <span class="n">derived_rates</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">onlyfwd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">derived_forward</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">onlyfwd</span><span class="o">.</span><span class="n">get_rates</span><span class="p">():</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">DerivedRate</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">use_pf</span><span class="o">=</span><span class="n">use_pf</span><span class="p">,</span> <span class="n">use_A_nuc</span><span class="o">=</span><span class="n">use_A_nuc</span><span class="p">)</span>
+            <span class="n">derived_rates</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
+
+        <span class="n">onlybwd</span> <span class="o">=</span> <span class="n">Library</span><span class="p">(</span><span class="n">rates</span><span class="o">=</span><span class="n">derived_rates</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">onlybwd</span></div></div>
 
 
 <div class="viewcode-block" id="RateFilter"><a class="viewcode-back" href="../../../pynucastro.rates.html#pynucastro.rates.library.RateFilter">[docs]</a><span class="k">class</span> <span class="nc">RateFilter</span><span class="p">:</span>
     <span class="sd">&quot;&quot;&quot;RateFilter filters out a specified rate or set of rates</span>
-
 <span class="sd">    A RateFilter stores selection rules specifying a rate or group of</span>
 <span class="sd">    rates to assist in searching for rates stored in a Library.</span>
 <span class="sd">    &quot;&quot;&quot;</span>

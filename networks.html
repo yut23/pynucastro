@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Creating Networks &mdash; pynucastro 1.6.0.post93+g1e8a89c documentation</title>
+  <title>Creating Networks &mdash; pynucastro 1.6.0.post125+g795a4c3 documentation</title>
       <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,6 +15,7 @@
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
         <script src="_static/jquery.js"></script>
         <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -23,7 +24,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="pynucastro" href="modules.html" />
+    <link rel="next" title="C++ Networks" href="cxx-networks.html" />
     <link rel="prev" title="Reverse Rates" href="partition-function.html" /> 
 </head>
 
@@ -33,6 +34,7 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
             <a href="index.html" class="icon icon-home"> pynucastro
+            <img src="_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 1.6
@@ -45,16 +47,30 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
-<ul class="current">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Overview of pynucastro</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Exploring Networks in Python</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="pynucastro-examples.html">pynucastro usage examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="plot-types.html">Plotting Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pynucastro-integration.html">Example of integrating a network</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Selecting Rates</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="library-examples.html">Selecting Rates from a Library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modify-example.html">Modifying Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="validate-example.html">Checking your network</a></li>
 <li class="toctree-l1"><a class="reference internal" href="electron-captures.html">Combining ReacLib Rates with Electron Capture Tables</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="modify-example.html">Modifying Rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="approx-rates-examples.html">Approximate Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="partition-function.html">Reverse Rates</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Writing Networks</span></p>
+<ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Creating Networks</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#all-networks">All networks</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#python-network">Python network</a></li>
@@ -62,6 +78,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#tabular-rates">Tabular Rates</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="cxx-networks.html">C++ Networks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sources.html">Third Party Data</a></li>
 </ul>
@@ -115,11 +135,11 @@
 }
 </style>
 <section id="creating-networks">
-<h1>Creating Networks<a class="headerlink" href="#creating-networks" title="Permalink to this headline">¶</a></h1>
+<h1>Creating Networks<a class="headerlink" href="#creating-networks" title="Permalink to this heading">¶</a></h1>
 <p>pynucastro can output the righthand side functions for ODE integration
 in Python or in a form for the AMReX-Astrophysics Microphysics package in C++</p>
 <section id="all-networks">
-<h2>All networks<a class="headerlink" href="#all-networks" title="Permalink to this headline">¶</a></h2>
+<h2>All networks<a class="headerlink" href="#all-networks" title="Permalink to this heading">¶</a></h2>
 <p>The first few steps to setting up any of the available network options
 are as follows. See the following section for details about the
 particular kind of network you are interested in creating.</p>
@@ -149,14 +169,14 @@ e.g. <code class="docutils literal notranslate"><span class="pre">mynet.py</span
 </ul>
 </section>
 <section id="python-network">
-<h2>Python network<a class="headerlink" href="#python-network" title="Permalink to this headline">¶</a></h2>
+<h2>Python network<a class="headerlink" href="#python-network" title="Permalink to this heading">¶</a></h2>
 <p>First follow the steps above for all networks. To integrate a Python
 network using the SciPy integration routines, customize
 <a class="reference external" href="https://github.com/pynucastro/pynucastro/blob/main/examples/CNO/burn.py">examples/CNO/burn.py</a> to initialize and run your network using the
 right hand side module you generated above.</p>
 </section>
 <section id="amrex-astro-microphysics-network">
-<h2>AMReX-Astro Microphysics network<a class="headerlink" href="#amrex-astro-microphysics-network" title="Permalink to this headline">¶</a></h2>
+<h2>AMReX-Astro Microphysics network<a class="headerlink" href="#amrex-astro-microphysics-network" title="Permalink to this heading">¶</a></h2>
 <p>The <a class="reference external" href="https://github.com/pynucastro/pynucastro/tree/main/examples/urca-23_starkiller">examples/urca-23_starkiller</a> example builds the right hand side, Jacobian,
 and helper Fortran modules to copy into the <code class="docutils literal notranslate"><span class="pre">networks/</span></code> subdirectory
 of the StarKiller Microphysics repository.</p>
@@ -164,7 +184,7 @@ of the StarKiller Microphysics repository.</p>
 all networks above.</p>
 </section>
 <section id="tabular-rates">
-<h2>Tabular Rates<a class="headerlink" href="#tabular-rates" title="Permalink to this headline">¶</a></h2>
+<h2>Tabular Rates<a class="headerlink" href="#tabular-rates" title="Permalink to this heading">¶</a></h2>
 <p>Tabular rates for reactions of the form <span class="math notranslate nohighlight">\(\rm{A \rightarrow B}\)</span>
 are supported by the standalone Fortran and StarKiller Microphysics
 network outputs.</p>
@@ -194,7 +214,7 @@ format:</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="partition-function.html" class="btn btn-neutral float-left" title="Reverse Rates" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="modules.html" class="btn btn-neutral float-right" title="pynucastro" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="cxx-networks.html" class="btn btn-neutral float-right" title="C++ Networks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pynucastro.networks.base_cxx_network &mdash; pynucastro 1.6.0.post93+g1e8a89c documentation</title>
+  <title>pynucastro.networks.base_cxx_network &mdash; pynucastro 1.6.0.post125+g795a4c3 documentation</title>
       <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -14,6 +14,7 @@
         <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
         <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
@@ -28,6 +29,7 @@
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
             <a href="../../../index.html" class="icon icon-home"> pynucastro
+            <img src="../../../_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 1.6
@@ -40,17 +42,35 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Overview of pynucastro</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Exploring Networks in Python</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../pynucastro-examples.html">pynucastro usage examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../plot-types.html">Plotting Examples</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pynucastro-integration.html">Example of integrating a network</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Selecting Rates</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../library-examples.html">Selecting Rates from a Library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../modify-example.html">Modifying Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../validate-example.html">Checking your network</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../electron-captures.html">Combining ReacLib Rates with Electron Capture Tables</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Advanced Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../modify-example.html">Modifying Rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../approx-rates-examples.html">Approximate Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../partition-function.html">Reverse Rates</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Writing Networks</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../networks.html">Creating Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cxx-networks.html">C++ Networks</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources.html">Third Party Data</a></li>
 </ul>
@@ -134,7 +154,6 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">ftags</span><span class="p">[</span><span class="s1">&#39;&lt;nrat_tabular&gt;&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrat_tabular</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ftags</span><span class="p">[</span><span class="s1">&#39;&lt;nrxn&gt;&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nrxn</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ftags</span><span class="p">[</span><span class="s1">&#39;&lt;ebind&gt;&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ebind</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">ftags</span><span class="p">[</span><span class="s1">&#39;&lt;screen_add&gt;&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_screen_add</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ftags</span><span class="p">[</span><span class="s1">&#39;&lt;compute_screening_factors&gt;&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_compute_screening_factors</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ftags</span><span class="p">[</span><span class="s1">&#39;&lt;write_reaclib_metadata&gt;&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_write_reaclib_metadata</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">ftags</span><span class="p">[</span><span class="s1">&#39;&lt;table_num&gt;&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_table_num</span>
@@ -226,20 +245,23 @@
 
         <span class="n">ydot</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_nuclei</span><span class="p">:</span>
-            <span class="n">ydot_sym_terms</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">rp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuclei_rate_pairs</span><span class="p">[</span><span class="n">n</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="n">rp</span><span class="o">.</span><span class="n">forward</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">fwd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbol_rates</span><span class="o">.</span><span class="n">ydot_term_symbol</span><span class="p">(</span><span class="n">rp</span><span class="o">.</span><span class="n">forward</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">fwd</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuclei_rate_pairs</span><span class="p">[</span><span class="n">n</span><span class="p">]:</span>
+                <span class="n">ydot</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ydot_sym_terms</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">rp</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuclei_rate_pairs</span><span class="p">[</span><span class="n">n</span><span class="p">]:</span>
+                    <span class="k">if</span> <span class="n">rp</span><span class="o">.</span><span class="n">forward</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">fwd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbol_rates</span><span class="o">.</span><span class="n">ydot_term_symbol</span><span class="p">(</span><span class="n">rp</span><span class="o">.</span><span class="n">forward</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">fwd</span> <span class="o">=</span> <span class="kc">None</span>
 
-                <span class="k">if</span> <span class="n">rp</span><span class="o">.</span><span class="n">reverse</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-                    <span class="n">rvs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbol_rates</span><span class="o">.</span><span class="n">ydot_term_symbol</span><span class="p">(</span><span class="n">rp</span><span class="o">.</span><span class="n">reverse</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="n">rvs</span> <span class="o">=</span> <span class="kc">None</span>
+                    <span class="k">if</span> <span class="n">rp</span><span class="o">.</span><span class="n">reverse</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">rvs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">symbol_rates</span><span class="o">.</span><span class="n">ydot_term_symbol</span><span class="p">(</span><span class="n">rp</span><span class="o">.</span><span class="n">reverse</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">rvs</span> <span class="o">=</span> <span class="kc">None</span>
 
-                <span class="n">ydot_sym_terms</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">fwd</span><span class="p">,</span> <span class="n">rvs</span><span class="p">))</span>
-            <span class="n">ydot</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">ydot_sym_terms</span>
+                    <span class="n">ydot_sym_terms</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">fwd</span><span class="p">,</span> <span class="n">rvs</span><span class="p">))</span>
+                <span class="n">ydot</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">ydot_sym_terms</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">ydot_out_result</span> <span class="o">=</span> <span class="n">ydot</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">solved_ydot</span> <span class="o">=</span> <span class="kc">True</span></div>
@@ -358,19 +380,6 @@
         <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_nuclei</span><span class="p">:</span>
             <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">indent</span><span class="o">*</span><span class="n">n_indent</span><span class="si">}</span><span class="s1">ebind_per_nucleon(</span><span class="si">{</span><span class="n">nuc</span><span class="o">.</span><span class="n">cindex</span><span class="p">()</span><span class="si">}</span><span class="s1">) = </span><span class="si">{</span><span class="n">nuc</span><span class="o">.</span><span class="n">nucbind</span><span class="si">}</span><span class="s1">_rt;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">_screen_add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_indent</span><span class="p">,</span> <span class="n">of</span><span class="p">):</span>
-        <span class="n">screening_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_screening_map</span><span class="p">()</span>
-        <span class="k">for</span> <span class="n">scr</span> <span class="ow">in</span> <span class="n">screening_map</span><span class="p">:</span>
-            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">indent</span><span class="o">*</span><span class="n">n_indent</span><span class="si">}</span><span class="s1">add_screening_factor(jscr++, &#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">scr</span><span class="o">.</span><span class="n">n1</span><span class="o">.</span><span class="n">dummy</span><span class="p">:</span>
-                <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;zion[</span><span class="si">{</span><span class="n">scr</span><span class="o">.</span><span class="n">n1</span><span class="o">.</span><span class="n">cindex</span><span class="p">()</span><span class="si">}</span><span class="s1">-1], aion[</span><span class="si">{</span><span class="n">scr</span><span class="o">.</span><span class="n">n1</span><span class="o">.</span><span class="n">cindex</span><span class="p">()</span><span class="si">}</span><span class="s1">-1], &#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">scr</span><span class="o">.</span><span class="n">n1</span><span class="o">.</span><span class="n">Z</span><span class="p">)</span><span class="si">}</span><span class="s1">_rt, </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">scr</span><span class="o">.</span><span class="n">n1</span><span class="o">.</span><span class="n">A</span><span class="p">)</span><span class="si">}</span><span class="s1">_rt, &#39;</span><span class="p">)</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">scr</span><span class="o">.</span><span class="n">n2</span><span class="o">.</span><span class="n">dummy</span><span class="p">:</span>
-                <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;zion[</span><span class="si">{</span><span class="n">scr</span><span class="o">.</span><span class="n">n2</span><span class="o">.</span><span class="n">cindex</span><span class="p">()</span><span class="si">}</span><span class="s1">-1], aion[</span><span class="si">{</span><span class="n">scr</span><span class="o">.</span><span class="n">n2</span><span class="o">.</span><span class="n">cindex</span><span class="p">()</span><span class="si">}</span><span class="s1">-1]);</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">scr</span><span class="o">.</span><span class="n">n2</span><span class="o">.</span><span class="n">Z</span><span class="p">)</span><span class="si">}</span><span class="s1">_rt, </span><span class="si">{</span><span class="nb">float</span><span class="p">(</span><span class="n">scr</span><span class="o">.</span><span class="n">n2</span><span class="o">.</span><span class="n">A</span><span class="p">)</span><span class="si">}</span><span class="s1">_rt);</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="p">)</span>
-
     <span class="k">def</span> <span class="nf">_write_reaclib_metadata</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_indent</span><span class="p">,</span> <span class="n">of</span><span class="p">):</span>
         <span class="n">jset</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">nr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reaclib_rates</span><span class="p">:</span>
@@ -481,6 +490,10 @@
     <span class="k">def</span> <span class="nf">_ydot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n_indent</span><span class="p">,</span> <span class="n">of</span><span class="p">):</span>
         <span class="c1"># Write YDOT</span>
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_nuclei</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">ydot_out_result</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">indent</span><span class="o">*</span><span class="n">n_indent</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol_rates</span><span class="o">.</span><span class="n">name_ydot_nuc</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">cindex</span><span class="p">()</span><span class="si">}</span><span class="s2">) = 0.0;</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
             <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">indent</span><span class="o">*</span><span class="n">n_indent</span><span class="si">}{</span><span class="bp">self</span><span class="o">.</span><span class="n">symbol_rates</span><span class="o">.</span><span class="n">name_ydot_nuc</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="n">n</span><span class="o">.</span><span class="n">cindex</span><span class="p">()</span><span class="si">}</span><span class="s2">) =</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="n">pair</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ydot_out_result</span><span class="p">[</span><span class="n">n</span><span class="p">]):</span>
                 <span class="c1"># pair here is the forward, reverse pair for a single rate as it affects</span>
