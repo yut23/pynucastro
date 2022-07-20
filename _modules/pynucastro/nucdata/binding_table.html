@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pynucastro.nucdata.binding_table &mdash; pynucastro 1.6.0.post139+g2f6e2e3 documentation</title>
+  <title>pynucastro.nucdata.binding_table &mdash; pynucastro 1.6.0.post151+g8345a0f documentation</title>
       <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -63,6 +63,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../modify-example.html">Modifying Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../approx-rates-examples.html">Approximate Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../partition-function.html">Reverse Rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../NSE-example.html">Nuclear Statistical Equilibrium</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Writing Networks</span></p>
 <ul>
@@ -141,7 +142,7 @@
             <span class="n">f</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">datfile</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">IOError</span><span class="p">:</span>
             <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;ERROR: data file not found!&#39;</span><span class="p">)</span>
-            <span class="n">exit</span><span class="p">()</span>
+            <span class="k">raise</span>
 
         <span class="c1"># Get rid of the header</span>
         <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">header_length</span><span class="p">):</span>
@@ -163,7 +164,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">nuclides</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">z</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;nuclear data for Z=</span><span class="si">{</span><span class="n">z</span><span class="si">}</span><span class="s2"> and N=</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> not available&quot;</span><span class="p">)</span></div></div>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;nuclear data for Z=</span><span class="si">{</span><span class="n">z</span><span class="si">}</span><span class="s2"> and N=</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2"> not available&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span></div></div>
 </pre></div>
 
            </div>

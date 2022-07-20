@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pynucastro.rates package &mdash; pynucastro 1.6.0.post139+g2f6e2e3 documentation</title>
+  <title>pynucastro.rates package &mdash; pynucastro 1.6.0.post151+g8345a0f documentation</title>
       <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -23,7 +23,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pynucastro.screening package" href="pynucastro.screening.html" />
-    <link rel="prev" title="pynucastro.nucleus package" href="pynucastro.nucleus.html" /> 
+    <link rel="prev" title="pynucastro.nucdata package" href="pynucastro.nucdata.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -66,6 +66,7 @@
 <li class="toctree-l1"><a class="reference internal" href="modify-example.html">Modifying Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="approx-rates-examples.html">Approximate Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="partition-function.html">Reverse Rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NSE-example.html">Nuclear Statistical Equilibrium</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Writing Networks</span></p>
 <ul>
@@ -85,7 +86,6 @@
 <li class="toctree-l3 current"><a class="reference internal" href="pynucastro.html#subpackages">Subpackages</a><ul class="current">
 <li class="toctree-l4"><a class="reference internal" href="pynucastro.networks.html">pynucastro.networks package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pynucastro.nucdata.html">pynucastro.nucdata package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pynucastro.nucleus.html">pynucastro.nucleus package</a></li>
 <li class="toctree-l4 current"><a class="current reference internal" href="#">pynucastro.rates package</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pynucastro.screening.html">pynucastro.screening package</a></li>
 </ul>
@@ -387,7 +387,7 @@ rate</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pynucastro.rates.rate.Rate.function_string_py">
-<span class="sig-name descname"><span class="pre">function_string_py</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">prefix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rate'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/rates/rate.html#Rate.function_string_py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.rates.rate.Rate.function_string_py" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">function_string_py</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/rates/rate.html#Rate.function_string_py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.rates.rate.Rate.function_string_py" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a string containing python function that computes the
 rate</p>
 </dd></dl>
@@ -429,12 +429,11 @@ lowest atomic number.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pynucastro.rates.rate.Rate.jacobian_string_py">
-<span class="sig-name descname"><span class="pre">jacobian_string_py</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ydot_j</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/rates/rate.html#Rate.jacobian_string_py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.rates.rate.Rate.jacobian_string_py" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">jacobian_string_py</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">y_i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/rates/rate.html#Rate.jacobian_string_py"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.rates.rate.Rate.jacobian_string_py" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return a string containing the term in a jacobian matrix
-in a reaction network corresponding to this rate.</p>
-<p>Returns the derivative of the j-th YDOT wrt. the i-th Y
-If the derivative is zero, returns the empty string ‘’</p>
-<p>ydot_j and y_i are objects of the class <code class="docutils literal notranslate"><span class="pre">Nucleus</span></code>.</p>
+in a reaction network corresponding to this rate differentiated
+with respect to y_i</p>
+<p>y_i is an objecs of the class <code class="docutils literal notranslate"><span class="pre">Nucleus</span></code>.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -500,7 +499,7 @@ Forward rates are those with Q &gt;= 0.</p>
 
 <dl class="py class">
 <dt class="sig sig-object py" id="pynucastro.rates.rate.SingleSet">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pynucastro.rates.rate.</span></span><span class="sig-name descname"><span class="pre">SingleSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labelprops</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/rates/rate.html#SingleSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.rates.rate.SingleSet" title="Permalink to this definition">¶</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pynucastro.rates.rate.</span></span><span class="sig-name descname"><span class="pre">SingleSet</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labelprops</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/rates/rate.html#SingleSet"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.rates.rate.SingleSet" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
 <p>a set in Reaclib is one piece of a rate, in the form</p>
 <blockquote>
@@ -549,7 +548,7 @@ object</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="pynucastro.nucleus.html" class="btn btn-neutral float-left" title="pynucastro.nucleus package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="pynucastro.nucdata.html" class="btn btn-neutral float-left" title="pynucastro.nucdata package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pynucastro.screening.html" class="btn btn-neutral float-right" title="pynucastro.screening package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

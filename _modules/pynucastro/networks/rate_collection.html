@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pynucastro.networks.rate_collection &mdash; pynucastro 1.6.0.post139+g2f6e2e3 documentation</title>
+  <title>pynucastro.networks.rate_collection &mdash; pynucastro 1.6.0.post151+g8345a0f documentation</title>
       <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -63,6 +63,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../modify-example.html">Modifying Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../approx-rates-examples.html">Approximate Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../partition-function.html">Reverse Rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../NSE-example.html">Nuclear Statistical Equilibrium</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Writing Networks</span></p>
 <ul>
@@ -103,9 +104,6 @@
 <span></span><span class="sd">&quot;&quot;&quot;A collection of classes and methods to deal with collections of</span>
 <span class="sd">rates that together make up a network.&quot;&quot;&quot;</span>
 
-<span class="c1"># disable a complaint about SymLogNorm</span>
-<span class="c1">#pylint: disable=redundant-keyword-arg</span>
-
 <span class="c1"># Common Imports</span>
 <span class="kn">import</span> <span class="nn">warnings</span>
 <span class="kn">import</span> <span class="nn">functools</span>
@@ -123,11 +121,16 @@
 <span class="kn">from</span> <span class="nn">matplotlib.ticker</span> <span class="kn">import</span> <span class="n">MaxNLocator</span>
 <span class="kn">from</span> <span class="nn">matplotlib.colors</span> <span class="kn">import</span> <span class="n">SymLogNorm</span>
 <span class="kn">from</span> <span class="nn">matplotlib.scale</span> <span class="kn">import</span> <span class="n">SymmetricalLogTransform</span>
+<span class="kn">from</span> <span class="nn">matplotlib.patches</span> <span class="kn">import</span> <span class="n">ConnectionPatch</span>
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>
 <span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">constants</span>
+<span class="kn">from</span> <span class="nn">scipy.optimize</span> <span class="kn">import</span> <span class="n">fsolve</span>
+<span class="kn">import</span> <span class="nn">copy</span>
+
 <span class="c1"># Import Rate</span>
-<span class="kn">from</span> <span class="nn">pynucastro.nucleus</span> <span class="kn">import</span> <span class="n">Nucleus</span>
+<span class="kn">from</span> <span class="nn">pynucastro.nucdata</span> <span class="kn">import</span> <span class="n">Nucleus</span>
 <span class="kn">from</span> <span class="nn">pynucastro.rates</span> <span class="kn">import</span> <span class="n">Rate</span><span class="p">,</span> <span class="n">RatePair</span><span class="p">,</span> <span class="n">ApproximateRate</span><span class="p">,</span> <span class="n">Library</span>
+<span class="kn">from</span> <span class="nn">pynucastro.screening</span> <span class="kn">import</span> <span class="n">PlasmaState</span><span class="p">,</span> <span class="n">ScreenFactors</span>
 
 <span class="kn">from</span> <span class="nn">pynucastro.nucdata</span> <span class="kn">import</span> <span class="n">PeriodicTable</span>
 
@@ -230,7 +233,117 @@
         <span class="n">ostr</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">:</span>
             <span class="n">ostr</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;  X(</span><span class="si">{</span><span class="n">k</span><span class="si">}</span><span class="s2">) : </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span>
-        <span class="k">return</span> <span class="n">ostr</span></div>
+        <span class="k">return</span> <span class="n">ostr</span>
+
+<div class="viewcode-block" id="Composition.plot"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.rate_collection.Composition.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">trace_threshold</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">hard_limit</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">size</span><span class="o">=</span><span class="p">(</span><span class="mi">9</span><span class="p">,</span> <span class="mi">5</span><span class="p">)):</span>
+        <span class="sd">&quot;&quot;&quot; Make a pie chart of Composition. group trace nuceli together and explode into bar chart</span>
+
+<span class="sd">        parameters</span>
+<span class="sd">        ----------</span>
+
+<span class="sd">        trace_threshold : the threshold to consider a component to be trace.</span>
+
+<span class="sd">        hard_limit : hard limit for nuclei to be labeled in the plot. Default is None which will set the limit to 5% of total trace abundance</span>
+
+<span class="sd">        size: tuple giving width x height of the plot in inches</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># find trace nuclei</span>
+        <span class="n">trace_keys</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">trace_tot</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">main_keys</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">:</span>
+            <span class="c1"># if below threshold, count as trace element</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">trace_threshold</span><span class="p">:</span>
+                <span class="n">trace_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+                <span class="n">trace_tot</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">main_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+        <span class="c1"># check if any trace nuclei</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">trace_keys</span><span class="p">:</span>
+            <span class="c1"># just do pie chart without including trace</span>
+
+            <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+
+            <span class="n">ax</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">labels</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">autopct</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">p</span><span class="o">/</span><span class="mi">100</span><span class="si">:</span><span class="s2">0.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># find trace nuclei which contribute little to trace proportion</span>
+            <span class="k">if</span> <span class="n">hard_limit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># make hardlimit proportional to trace abundance</span>
+                <span class="n">hard_limit</span> <span class="o">=</span> <span class="mf">0.05</span><span class="o">*</span><span class="n">trace_tot</span>
+
+            <span class="n">limited_trace_keys</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">other_trace_tot</span> <span class="o">=</span> <span class="mf">0.</span>
+            <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">trace_keys</span><span class="p">:</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">hard_limit</span><span class="p">:</span>
+                    <span class="n">other_trace_tot</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">k</span><span class="p">]</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">limited_trace_keys</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+
+            <span class="c1"># make figure and assign axis objects</span>
+            <span class="n">fig</span><span class="p">,</span> <span class="p">(</span><span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">)</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="n">size</span><span class="p">)</span>
+            <span class="n">fig</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">wspace</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="c1"># pie chart parameters</span>
+            <span class="n">main_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">trace_tot</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">main_keys</span><span class="p">]</span>
+            <span class="n">main_labels</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;trace&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">main_keys</span>
+            <span class="n">explode</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="mf">0.</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">main_keys</span><span class="p">))]</span>
+
+            <span class="c1"># rotate so that first wedge is split by the x-axis</span>
+            <span class="n">angle</span> <span class="o">=</span> <span class="o">-</span><span class="mi">180</span> <span class="o">*</span> <span class="n">main_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">wedges</span><span class="p">,</span> <span class="o">*</span><span class="n">_</span> <span class="o">=</span> <span class="n">ax1</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">main_values</span><span class="p">,</span> <span class="n">autopct</span><span class="o">=</span><span class="k">lambda</span> <span class="n">p</span><span class="p">:</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">p</span><span class="o">/</span><span class="mi">100</span><span class="si">:</span><span class="s2">0.3f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">startangle</span><span class="o">=</span><span class="n">angle</span><span class="p">,</span>
+                                <span class="n">labels</span><span class="o">=</span><span class="n">main_labels</span><span class="p">,</span> <span class="n">explode</span><span class="o">=</span><span class="n">explode</span><span class="p">)</span>
+
+            <span class="c1"># bar chart parameters</span>
+            <span class="n">trace_values</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">limited_trace_keys</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">other_trace_tot</span><span class="p">]</span>
+            <span class="n">trace_labels</span> <span class="o">=</span> <span class="p">[</span><span class="n">k</span><span class="o">.</span><span class="n">short_spec_name</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">limited_trace_keys</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="s1">&#39;other&#39;</span><span class="p">]</span>
+            <span class="n">bottom</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="n">width</span> <span class="o">=</span> <span class="mf">0.1</span>
+
+            <span class="c1"># Adding from the top matches the legend.</span>
+            <span class="n">alpha_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">trace_values</span><span class="p">))</span>
+            <span class="n">trace_wedge_color</span> <span class="o">=</span> <span class="n">wedges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">get_facecolor</span><span class="p">()</span>
+
+            <span class="k">for</span> <span class="n">j</span><span class="p">,</span> <span class="p">(</span><span class="n">height</span><span class="p">,</span> <span class="n">label</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="o">*</span><span class="nb">zip</span><span class="p">(</span><span class="n">trace_values</span><span class="p">,</span> <span class="n">trace_labels</span><span class="p">)]):</span>
+                <span class="n">bottom</span> <span class="o">-=</span> <span class="n">height</span>
+                <span class="n">bc</span> <span class="o">=</span> <span class="n">ax2</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">bottom</span><span class="o">=</span><span class="n">bottom</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">trace_wedge_color</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">label</span><span class="p">,</span>
+                            <span class="n">alpha</span><span class="o">=</span><span class="n">alpha_list</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+
+                <span class="n">ax2</span><span class="o">.</span><span class="n">bar_label</span><span class="p">(</span><span class="n">bc</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">height</span><span class="si">:</span><span class="s2">.2e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="n">label_type</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+                <span class="n">ax2</span><span class="o">.</span><span class="n">bar_label</span><span class="p">(</span><span class="n">bc</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">label</span><span class="si">:</span><span class="s2">&gt;30</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">],</span> <span class="n">label_type</span><span class="o">=</span><span class="s1">&#39;center&#39;</span><span class="p">)</span>
+
+            <span class="n">ax2</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Composition of Trace Nuclei&#39;</span><span class="p">)</span>
+            <span class="n">ax2</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+            <span class="n">ax2</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span> <span class="mf">2.5</span> <span class="o">*</span> <span class="n">width</span><span class="p">,</span> <span class="mf">2.5</span> <span class="o">*</span> <span class="n">width</span><span class="p">)</span>
+
+            <span class="c1"># use ConnectionPatch to draw lines between the two plots</span>
+            <span class="n">theta1</span><span class="p">,</span> <span class="n">theta2</span> <span class="o">=</span> <span class="n">wedges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">theta1</span><span class="p">,</span> <span class="n">wedges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">theta2</span>
+            <span class="n">center</span><span class="p">,</span> <span class="n">r</span> <span class="o">=</span> <span class="n">wedges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">center</span><span class="p">,</span> <span class="n">wedges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">r</span>
+            <span class="n">bar_height</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">trace_values</span><span class="p">)</span>
+
+            <span class="c1"># draw top connecting line</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">theta2</span><span class="p">)</span> <span class="o">+</span> <span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">theta2</span><span class="p">)</span> <span class="o">+</span> <span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">con</span> <span class="o">=</span> <span class="n">ConnectionPatch</span><span class="p">(</span><span class="n">xyA</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">bar_height</span><span class="o">+</span><span class="n">bottom</span><span class="p">),</span> <span class="n">coordsA</span><span class="o">=</span><span class="n">ax2</span><span class="o">.</span><span class="n">transData</span><span class="p">,</span>
+                                <span class="n">xyB</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">coordsB</span><span class="o">=</span><span class="n">ax1</span><span class="o">.</span><span class="n">transData</span><span class="p">)</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">trace_wedge_color</span><span class="p">)</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">set_linewidth</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+            <span class="n">ax2</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">con</span><span class="p">)</span>
+
+            <span class="c1"># draw bottom connecting line</span>
+            <span class="n">x</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">cos</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">theta1</span><span class="p">)</span> <span class="o">+</span> <span class="n">center</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">y</span> <span class="o">=</span> <span class="n">r</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sin</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">/</span> <span class="mi">180</span> <span class="o">*</span> <span class="n">theta1</span><span class="p">)</span> <span class="o">+</span> <span class="n">center</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">con</span> <span class="o">=</span> <span class="n">ConnectionPatch</span><span class="p">(</span><span class="n">xyA</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="n">width</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">bottom</span><span class="p">),</span> <span class="n">coordsA</span><span class="o">=</span><span class="n">ax2</span><span class="o">.</span><span class="n">transData</span><span class="p">,</span>
+                                <span class="n">xyB</span><span class="o">=</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">),</span> <span class="n">coordsB</span><span class="o">=</span><span class="n">ax1</span><span class="o">.</span><span class="n">transData</span><span class="p">)</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">set_color</span><span class="p">(</span><span class="n">trace_wedge_color</span><span class="p">)</span>
+            <span class="n">ax2</span><span class="o">.</span><span class="n">add_artist</span><span class="p">(</span><span class="n">con</span><span class="p">)</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">set_linewidth</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+
+        <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">fig</span></div></div>
 
 
 <div class="viewcode-block" id="ScreeningPair"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.rate_collection.ScreeningPair">[docs]</a><span class="k">class</span> <span class="nc">ScreeningPair</span><span class="p">:</span>
@@ -322,33 +435,25 @@
         <span class="k">if</span> <span class="n">rates</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rates</span><span class="p">,</span> <span class="n">Rate</span><span class="p">):</span>
                 <span class="n">rates</span> <span class="o">=</span> <span class="p">[</span><span class="n">rates</span><span class="p">]</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rates</span><span class="p">:</span>
-                    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Rate</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Expected Rate object or list of Rate objects passed as the rates argument.&#39;</span><span class="p">)</span>
-                <span class="k">raise</span>
+            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rates</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">Rate</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expected Rate object or list of Rate objects passed as the rates argument.&#39;</span><span class="p">)</span>
+            <span class="n">rlib</span> <span class="o">=</span> <span class="n">Library</span><span class="p">(</span><span class="n">rates</span><span class="o">=</span><span class="n">rates</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">library</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">=</span> <span class="n">rlib</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">rlib</span> <span class="o">=</span> <span class="n">Library</span><span class="p">(</span><span class="n">rates</span><span class="o">=</span><span class="n">rates</span><span class="p">)</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">library</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">=</span> <span class="n">rlib</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">+</span> <span class="n">rlib</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">+</span> <span class="n">rlib</span>
 
         <span class="k">if</span> <span class="n">libraries</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">libraries</span><span class="p">,</span> <span class="n">Library</span><span class="p">):</span>
                 <span class="n">libraries</span> <span class="o">=</span> <span class="p">[</span><span class="n">libraries</span><span class="p">]</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">for</span> <span class="n">lib</span> <span class="ow">in</span> <span class="n">libraries</span><span class="p">:</span>
-                    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lib</span><span class="p">,</span> <span class="n">Library</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
-                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Expected Library object or list of Library objects passed as the libraries argument.&#39;</span><span class="p">)</span>
-                <span class="k">raise</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">library</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">=</span> <span class="n">libraries</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-                <span class="k">for</span> <span class="n">lib</span> <span class="ow">in</span> <span class="n">libraries</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">+</span> <span class="n">lib</span>
+            <span class="k">for</span> <span class="n">lib</span> <span class="ow">in</span> <span class="n">libraries</span><span class="p">:</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lib</span><span class="p">,</span> <span class="n">Library</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Expected Library object or list of Library objects passed as the libraries argument.&#39;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">library</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">=</span> <span class="n">libraries</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">lib</span> <span class="ow">in</span> <span class="n">libraries</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">+</span> <span class="n">lib</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">library</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rates</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">rates</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">library</span><span class="o">.</span><span class="n">get_rates</span><span class="p">()</span>
@@ -437,14 +542,12 @@
         <span class="k">for</span> <span class="n">rf</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">files</span><span class="p">:</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">rflib</span> <span class="o">=</span> <span class="n">Library</span><span class="p">(</span><span class="n">rf</span><span class="p">)</span>
-            <span class="k">except</span><span class="p">:</span>  <span class="c1"># noqa</span>
-                <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error reading library from file: </span><span class="si">{</span><span class="n">rf</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="k">raise</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error reading library from file: </span><span class="si">{</span><span class="n">rf</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">library</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">=</span> <span class="n">rflib</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">library</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">=</span> <span class="n">rflib</span>
-                <span class="k">else</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">+</span> <span class="n">rflib</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">library</span> <span class="o">+</span> <span class="n">rflib</span>
 
 <div class="viewcode-block" id="RateCollection.get_forward_rates"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.rate_collection.RateCollection.get_forward_rates">[docs]</a>    <span class="k">def</span> <span class="nf">get_forward_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;return a list of the forward (exothermic) rates&quot;&quot;&quot;</span>
@@ -530,8 +633,7 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="k">return</span> <span class="p">[</span><span class="n">r</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rates</span> <span class="k">if</span> <span class="n">r</span><span class="o">.</span><span class="n">fname</span> <span class="o">==</span> <span class="n">rid</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
         <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ERROR: rate identifier does not match a rate in this network.&quot;</span><span class="p">)</span>
-            <span class="k">raise</span></div>
+            <span class="k">raise</span> <span class="ne">LookupError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;rate identifier </span><span class="si">{</span><span class="n">rid</span><span class="si">!r}</span><span class="s2"> does not match a rate in this network.&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="bp">None</span></div>
 
 <div class="viewcode-block" id="RateCollection.get_rate_by_nuclei"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.rate_collection.RateCollection.get_rate_by_nuclei">[docs]</a>    <span class="k">def</span> <span class="nf">get_rate_by_nuclei</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reactants</span><span class="p">,</span> <span class="n">products</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;given a list of reactants and products, return any matching rates&quot;&quot;&quot;</span>
@@ -541,8 +643,7 @@
 
         <span class="k">if</span> <span class="ow">not</span> <span class="n">_tmp</span><span class="p">:</span>
             <span class="k">return</span> <span class="kc">None</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">_tmp</span></div>
+        <span class="k">return</span> <span class="n">_tmp</span></div>
 
 <div class="viewcode-block" id="RateCollection.remove_nuclei"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.rate_collection.RateCollection.remove_nuclei">[docs]</a>    <span class="k">def</span> <span class="nf">remove_nuclei</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nuc_list</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;remove the nuclei in nuc_list from the network along with any rates</span>
@@ -666,28 +767,163 @@
         <span class="c1"># regenerate the links</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_build_collection</span><span class="p">()</span></div>
 
-<div class="viewcode-block" id="RateCollection.evaluate_rates"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.rate_collection.RateCollection.evaluate_rates">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">composition</span><span class="p">):</span>
+<div class="viewcode-block" id="RateCollection.evaluate_rates"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.rate_collection.RateCollection.evaluate_rates">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">composition</span><span class="p">,</span> <span class="n">screen_func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;evaluate the rates for a specific density, temperature, and</span>
-<span class="sd">        composition&quot;&quot;&quot;</span>
+<span class="sd">        composition, with optional screening&quot;&quot;&quot;</span>
         <span class="n">rvals</span> <span class="o">=</span> <span class="p">{}</span>
         <span class="n">ys</span> <span class="o">=</span> <span class="n">composition</span><span class="o">.</span><span class="n">get_molar</span><span class="p">()</span>
         <span class="n">y_e</span> <span class="o">=</span> <span class="n">composition</span><span class="o">.</span><span class="n">eval_ye</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">screen_func</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">screen_factors</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_screening</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">composition</span><span class="p">,</span> <span class="n">screen_func</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">screen_factors</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">rates</span><span class="p">:</span>
             <span class="n">val</span> <span class="o">=</span> <span class="n">r</span><span class="o">.</span><span class="n">prefactor</span> <span class="o">*</span> <span class="n">rho</span><span class="o">**</span><span class="n">r</span><span class="o">.</span><span class="n">dens_exp</span> <span class="o">*</span> <span class="n">r</span><span class="o">.</span><span class="n">eval</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">y_e</span><span class="p">)</span>
             <span class="k">if</span> <span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">weak_type</span> <span class="o">==</span> <span class="s1">&#39;electron_capture&#39;</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">r</span><span class="o">.</span><span class="n">tabular</span><span class="p">):</span>
                 <span class="n">val</span> <span class="o">=</span> <span class="n">val</span> <span class="o">*</span> <span class="n">y_e</span>
             <span class="n">yfac</span> <span class="o">=</span> <span class="n">functools</span><span class="o">.</span><span class="n">reduce</span><span class="p">(</span><span class="n">mul</span><span class="p">,</span> <span class="p">[</span><span class="n">ys</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">reactants</span><span class="p">])</span>
-            <span class="n">rvals</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">yfac</span> <span class="o">*</span> <span class="n">val</span>
+            <span class="n">rvals</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">yfac</span> <span class="o">*</span> <span class="n">val</span> <span class="o">*</span> <span class="n">screen_factors</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">rvals</span></div>
 
-<div class="viewcode-block" id="RateCollection.evaluate_ydots"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.rate_collection.RateCollection.evaluate_ydots">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_ydots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">composition</span><span class="p">):</span>
+<div class="viewcode-block" id="RateCollection.evaluate_screening"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.rate_collection.RateCollection.evaluate_screening">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_screening</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">composition</span><span class="p">,</span> <span class="n">screen_func</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Evaluate the screening factors for each rate, using one of the</span>
+<span class="sd">        methods in :py:mod:`pynucastro.screening`&quot;&quot;&quot;</span>
+        <span class="c1"># this follows the same logic as BaseCxxNetwork._compute_screening_factors()</span>
+        <span class="n">factors</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">ys</span> <span class="o">=</span> <span class="n">composition</span><span class="o">.</span><span class="n">get_molar</span><span class="p">()</span>
+        <span class="n">plasma_state</span> <span class="o">=</span> <span class="n">PlasmaState</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">ys</span><span class="p">)</span>
+        <span class="n">screening_map</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_screening_map</span><span class="p">()</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">scr</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">screening_map</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">scr</span><span class="o">.</span><span class="n">n1</span><span class="o">.</span><span class="n">dummy</span> <span class="ow">or</span> <span class="n">scr</span><span class="o">.</span><span class="n">n2</span><span class="o">.</span><span class="n">dummy</span><span class="p">):</span>
+                <span class="n">scn_fac</span> <span class="o">=</span> <span class="n">ScreenFactors</span><span class="p">(</span><span class="n">scr</span><span class="o">.</span><span class="n">n1</span><span class="p">,</span> <span class="n">scr</span><span class="o">.</span><span class="n">n2</span><span class="p">)</span>
+                <span class="n">scor</span> <span class="o">=</span> <span class="n">screen_func</span><span class="p">(</span><span class="n">plasma_state</span><span class="p">,</span> <span class="n">scn_fac</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">if</span> <span class="n">scr</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;he4_he4_he4&quot;</span><span class="p">:</span>
+                <span class="c1"># we don&#39;t need to do anything here, but we want to avoid</span>
+                <span class="c1"># immediately applying the screening</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="n">scr</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;he4_he4_he4_dummy&quot;</span><span class="p">:</span>
+                <span class="c1"># make sure the previous iteration was the first part of 3-alpha</span>
+                <span class="k">assert</span> <span class="n">screening_map</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;he4_he4_he4&quot;</span>
+                <span class="c1"># handle the second part of the screening for 3-alpha</span>
+                <span class="n">scn_fac2</span> <span class="o">=</span> <span class="n">ScreenFactors</span><span class="p">(</span><span class="n">scr</span><span class="o">.</span><span class="n">n1</span><span class="p">,</span> <span class="n">scr</span><span class="o">.</span><span class="n">n2</span><span class="p">)</span>
+                <span class="n">scor2</span> <span class="o">=</span> <span class="n">screen_func</span><span class="p">(</span><span class="n">plasma_state</span><span class="p">,</span> <span class="n">scn_fac2</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+                <span class="c1"># there might be both the forward and reverse 3-alpha</span>
+                <span class="c1"># if we are doing symmetric screening</span>
+                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">scr</span><span class="o">.</span><span class="n">rates</span><span class="p">:</span>
+                    <span class="c1"># use scor from the previous loop iteration</span>
+                    <span class="n">factors</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">scor</span> <span class="o">*</span> <span class="n">scor2</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># there might be several rates that have the same</span>
+                <span class="c1"># reactants and therefore the same screening applies</span>
+                <span class="c1"># -- handle them all now</span>
+                <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">scr</span><span class="o">.</span><span class="n">rates</span><span class="p">:</span>
+                    <span class="n">factors</span><span class="p">[</span><span class="n">r</span><span class="p">]</span> <span class="o">=</span> <span class="n">scor</span>
+
+        <span class="k">return</span> <span class="n">factors</span></div>
+
+    <span class="k">def</span> <span class="nf">_evaluate_comp_NSE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">ye</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; A helper equation that finds the mass fraction of each nuclide in NSE state,</span>
+<span class="sd">        u[0] is chemical potential of proton  while u[1] is chemical potential of neutron&quot;&quot;&quot;</span>
+
+        <span class="c1"># Define constants: amu, boltzmann, planck, and electron charge</span>
+        <span class="n">m_u</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;unified atomic mass unit&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.0e3</span>  <span class="c1"># atomic unit mass in g</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;Boltzmann constant&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.0e7</span>          <span class="c1"># boltzmann in erg/K</span>
+        <span class="n">h</span> <span class="o">=</span> <span class="n">constants</span><span class="o">.</span><span class="n">value</span><span class="p">(</span><span class="s2">&quot;Planck constant&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1.0e7</span>             <span class="c1"># in cgs</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="mf">4.8032e-10</span>                                             <span class="c1"># electron charge in cgs</span>
+        <span class="n">ErgToMeV</span> <span class="o">=</span> <span class="mf">624151.0</span>
+
+        <span class="c1"># These are three constants for calculating coulomb corrections of chemical energy, see Calders paper: iopscience 510709, appendix</span>
+        <span class="n">A_1</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.9052</span>
+        <span class="n">A_2</span> <span class="o">=</span> <span class="mf">0.6322</span>
+        <span class="n">A_3</span> <span class="o">=</span> <span class="o">-</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">3.0</span><span class="p">)</span> <span class="o">-</span> <span class="n">A_1</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">A_2</span><span class="p">)</span>
+
+        <span class="c1"># Create composition object for NSE and find electron number density</span>
+        <span class="n">comp_NSE</span> <span class="o">=</span> <span class="n">Composition</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unique_nuclei</span><span class="p">)</span>
+        <span class="n">n_e</span> <span class="o">=</span> <span class="n">rho</span> <span class="o">*</span> <span class="n">ye</span> <span class="o">/</span> <span class="n">m_u</span>
+
+        <span class="c1"># u_c is the coulomb correction term for NSE</span>
+        <span class="c1"># Calculate the composition at NSE, equations found in appendix of Calder paper</span>
+        <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_nuclei</span><span class="p">:</span>
+            <span class="n">gamma</span> <span class="o">=</span> <span class="n">nuc</span><span class="o">.</span><span class="n">Z</span><span class="o">**</span><span class="p">(</span><span class="mf">5.</span> <span class="o">/</span> <span class="mf">3.</span><span class="p">)</span> <span class="o">*</span> <span class="n">e</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="mf">4.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">n_e</span> <span class="o">/</span> <span class="mf">3.0</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">1.</span> <span class="o">/</span> <span class="mf">3.</span><span class="p">)</span> <span class="o">/</span> <span class="n">k</span> <span class="o">/</span> <span class="n">T</span>
+            <span class="n">u_c</span> <span class="o">=</span> <span class="n">ErgToMeV</span> <span class="o">*</span> <span class="n">k</span> <span class="o">*</span> <span class="n">T</span> <span class="o">*</span> <span class="p">(</span><span class="n">A_1</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gamma</span> <span class="o">*</span> <span class="p">(</span><span class="n">A_2</span> <span class="o">+</span> <span class="n">gamma</span><span class="p">))</span> <span class="o">-</span> <span class="n">A_2</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gamma</span> <span class="o">/</span> <span class="n">A_2</span><span class="p">)</span> <span class="o">+</span>
+                                      <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">+</span> <span class="n">gamma</span> <span class="o">/</span> <span class="n">A_2</span><span class="p">)))</span> <span class="o">+</span> <span class="mf">2.0</span> <span class="o">*</span> <span class="n">A_3</span> <span class="o">*</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gamma</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">arctan</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">gamma</span><span class="p">))))</span>
+            <span class="n">comp_NSE</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">nuc</span><span class="p">]</span> <span class="o">=</span> <span class="n">m_u</span> <span class="o">*</span> <span class="n">nuc</span><span class="o">.</span><span class="n">A_nuc</span> <span class="o">*</span> <span class="n">nuc</span><span class="o">.</span><span class="n">partition_function</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="n">rho</span> <span class="o">*</span> <span class="p">(</span><span class="mf">2.0</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span> <span class="o">*</span> <span class="n">m_u</span> <span class="o">*</span> <span class="n">nuc</span><span class="o">.</span><span class="n">A_nuc</span> <span class="o">*</span> <span class="n">k</span> <span class="o">*</span> <span class="n">T</span> <span class="o">/</span> <span class="n">h</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">**</span><span class="p">(</span><span class="mf">3.</span> <span class="o">/</span> <span class="mf">2.</span><span class="p">)</span> \
+            <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="n">nuc</span><span class="o">.</span><span class="n">Z</span> <span class="o">*</span> <span class="n">u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">nuc</span><span class="o">.</span><span class="n">N</span> <span class="o">*</span> <span class="n">u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">u_c</span> <span class="o">+</span> <span class="n">nuc</span><span class="o">.</span><span class="n">nucbind</span> <span class="o">*</span> <span class="n">nuc</span><span class="o">.</span><span class="n">A</span><span class="p">)</span> <span class="o">/</span> <span class="n">k</span> <span class="o">/</span> <span class="n">T</span> <span class="o">/</span> <span class="n">ErgToMeV</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">comp_NSE</span>
+
+    <span class="k">def</span> <span class="nf">_constraint_eq</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">u</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">ye</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Constraint Equations used to evaluate chemical potential for proton and neutron,</span>
+<span class="sd">        which is used when evaluating composition at NSE&quot;&quot;&quot;</span>
+
+        <span class="n">comp_NSE</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate_comp_NSE</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">ye</span><span class="p">)</span>
+
+        <span class="n">eq1</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">comp_NSE</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">values</span><span class="p">())</span> <span class="o">-</span> <span class="mf">1.0</span>
+        <span class="n">eq2</span> <span class="o">=</span> <span class="n">ye</span> <span class="o">-</span> <span class="n">comp_NSE</span><span class="o">.</span><span class="n">eval_ye</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">eq1</span><span class="p">,</span> <span class="n">eq2</span><span class="p">]</span>
+
+<div class="viewcode-block" id="RateCollection.get_comp_NSE"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.rate_collection.RateCollection.get_comp_NSE">[docs]</a>    <span class="k">def</span> <span class="nf">get_comp_NSE</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">ye</span><span class="p">,</span> <span class="n">init_guess</span><span class="o">=</span><span class="p">(</span><span class="o">-</span><span class="mf">3.5</span><span class="p">,</span> <span class="o">-</span><span class="mf">15.0</span><span class="p">),</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1.5e-9</span><span class="p">,</span> <span class="n">tell_guess</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns the NSE composition given density, temperature and prescribed electron fraction</span>
+<span class="sd">        using scipy.fsolve, `tol` is an optional parameter for the tolerance of scipy.fsolve.</span>
+<span class="sd">        init_guess is optional, however one should change init_guess accordingly if unable or</span>
+<span class="sd">        taking long time to find solution.</span>
+<span class="sd">        One can enable printing the actual guess that found the solution after fine-tuning, which is useful</span>
+<span class="sd">        when calling this method multiple times such as making a plot.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">init_guess</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">init_guess</span><span class="p">)</span>
+        <span class="n">is_pos_old</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">found_sol</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># This nested loops should fine-tune the initial guess if fsolve is unable to find a solution</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">j</span> <span class="o">&lt;</span> <span class="mi">15</span><span class="p">):</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">guess</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">init_guess</span><span class="p">)</span>
+            <span class="n">init_dx</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+            <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="mi">15</span><span class="p">):</span>
+                <span class="n">u</span> <span class="o">=</span> <span class="n">fsolve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_constraint_eq</span><span class="p">,</span> <span class="n">guess</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">ye</span><span class="p">),</span> <span class="n">xtol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span> <span class="n">maxfev</span><span class="o">=</span><span class="mi">800</span><span class="p">)</span>
+                <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_constraint_eq</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">ye</span><span class="p">)</span>
+                <span class="n">is_pos_new</span> <span class="o">=</span> <span class="nb">all</span><span class="p">(</span><span class="n">k</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">res</span><span class="p">)</span>
+                <span class="n">found_sol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">res</span><span class="p">,</span> <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span> <span class="n">rtol</span><span class="o">=</span><span class="mf">1e-2</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">))</span>
+
+                <span class="k">if</span> <span class="n">found_sol</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">tell_guess</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;After fine-tuning the initial guess, the actual guess that found the solution was </span><span class="si">{</span><span class="n">guess</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="n">comp_NSE</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate_comp_NSE</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">ye</span><span class="p">)</span>
+
+                    <span class="k">return</span> <span class="n">comp_NSE</span>
+
+                <span class="k">if</span> <span class="n">is_pos_old</span> <span class="o">!=</span> <span class="n">is_pos_new</span><span class="p">:</span>
+                    <span class="n">init_dx</span> <span class="o">*=</span> <span class="mf">0.8</span>
+
+                <span class="k">if</span> <span class="n">is_pos_new</span><span class="p">:</span>
+                    <span class="n">guess</span> <span class="o">-=</span> <span class="n">init_dx</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">guess</span> <span class="o">+=</span> <span class="n">init_dx</span>
+
+                <span class="n">is_pos_old</span> <span class="o">=</span> <span class="n">is_pos_new</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+            <span class="n">init_guess</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-=</span> <span class="mf">0.5</span>
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Unable to find a solution, try to adjust initial guess manually&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="RateCollection.evaluate_ydots"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.rate_collection.RateCollection.evaluate_ydots">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_ydots</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">composition</span><span class="p">,</span> <span class="n">screen_func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;evaluate net rate of change of molar abundance for each nucleus</span>
 <span class="sd">        for a specific density, temperature, and composition&quot;&quot;&quot;</span>
 
-        <span class="n">rvals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_rates</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">composition</span><span class="p">)</span>
-        <span class="n">ydots</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">rvals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_rates</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">composition</span><span class="p">,</span> <span class="n">screen_func</span><span class="p">)</span>
+        <span class="n">ydots</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_nuclei</span><span class="p">:</span>
 
@@ -705,11 +941,11 @@
 
         <span class="k">return</span> <span class="n">ydots</span></div>
 
-<div class="viewcode-block" id="RateCollection.evaluate_energy_generation"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.rate_collection.RateCollection.evaluate_energy_generation">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_energy_generation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">composition</span><span class="p">):</span>
+<div class="viewcode-block" id="RateCollection.evaluate_energy_generation"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.rate_collection.RateCollection.evaluate_energy_generation">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_energy_generation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">composition</span><span class="p">,</span> <span class="n">screen_func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;evaluate the specific energy generation rate of the network for a specific</span>
 <span class="sd">        density, temperature and composition&quot;&quot;&quot;</span>
 
-        <span class="n">ydots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_ydots</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">composition</span><span class="p">)</span>
+        <span class="n">ydots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_ydots</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">composition</span><span class="p">,</span> <span class="n">screen_func</span><span class="p">)</span>
         <span class="n">enuc</span> <span class="o">=</span> <span class="mf">0.</span>
 
         <span class="c1"># compute constants and units</span>
@@ -740,12 +976,12 @@
 
         <span class="k">return</span> <span class="n">enuc</span></div>
 
-<div class="viewcode-block" id="RateCollection.evaluate_activity"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.rate_collection.RateCollection.evaluate_activity">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_activity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">composition</span><span class="p">):</span>
+<div class="viewcode-block" id="RateCollection.evaluate_activity"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.rate_collection.RateCollection.evaluate_activity">[docs]</a>    <span class="k">def</span> <span class="nf">evaluate_activity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">composition</span><span class="p">,</span> <span class="n">screen_func</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;sum over all of the terms contributing to ydot,</span>
 <span class="sd">        neglecting sign&quot;&quot;&quot;</span>
 
-        <span class="n">rvals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_rates</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">composition</span><span class="p">)</span>
-        <span class="n">act</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">rvals</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">evaluate_rates</span><span class="p">(</span><span class="n">rho</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">composition</span><span class="p">,</span> <span class="n">screen_func</span><span class="p">)</span>
+        <span class="n">act</span> <span class="o">=</span> <span class="p">{}</span>
 
         <span class="k">for</span> <span class="n">nuc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_nuclei</span><span class="p">:</span>
 
@@ -770,12 +1006,12 @@
 
         <span class="n">nc</span> <span class="o">=</span> <span class="p">{}</span>
 
-        <span class="k">for</span> <span class="n">rate</span> <span class="ow">in</span> <span class="n">rvals</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">rate</span><span class="p">,</span> <span class="n">rval</span> <span class="ow">in</span> <span class="n">rvals</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">nucs</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">rate</span><span class="o">.</span><span class="n">reactants</span><span class="p">):</span>
-                <span class="n">nucs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="o">-</span><span class="n">rate</span><span class="o">.</span><span class="n">reactants</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">rvals</span><span class="p">[</span><span class="n">rate</span><span class="p">]))</span>
+                <span class="n">nucs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="o">-</span><span class="n">rate</span><span class="o">.</span><span class="n">reactants</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">rval</span><span class="p">))</span>
             <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">rate</span><span class="o">.</span><span class="n">products</span><span class="p">):</span>
-                <span class="n">nucs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">rate</span><span class="o">.</span><span class="n">products</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">rvals</span><span class="p">[</span><span class="n">rate</span><span class="p">]))</span>
+                <span class="n">nucs</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">n</span><span class="p">,</span> <span class="n">rate</span><span class="o">.</span><span class="n">products</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">*</span> <span class="n">rval</span><span class="p">))</span>
             <span class="n">nc</span><span class="p">[</span><span class="n">rate</span><span class="p">]</span> <span class="o">=</span> <span class="n">nucs</span>
 
         <span class="k">return</span> <span class="n">nc</span>
@@ -961,6 +1197,7 @@
     <span class="k">def</span> <span class="nf">_write_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;A stub for function to output the network -- this is implementation</span>
 <span class="sd">        dependent.&quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=unused-argument</span>
         <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;To create network integration source code, use a class that implements a specific network type.&#39;</span><span class="p">)</span>
 
 <div class="viewcode-block" id="RateCollection.plot"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.rate_collection.RateCollection.plot">[docs]</a>    <span class="k">def</span> <span class="nf">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rho</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">comp</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
@@ -1111,32 +1348,33 @@
                         <span class="k">continue</span>
 
                 <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">r</span><span class="o">.</span><span class="n">products</span><span class="p">:</span>
-                    <span class="k">if</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">node_nuclei</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">p</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">node_nuclei</span><span class="p">:</span>
+                        <span class="k">continue</span>
 
-                        <span class="k">if</span> <span class="n">hide_xalpha</span> <span class="ow">and</span> <span class="n">_skip_xalpha</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
-                            <span class="k">continue</span>
+                    <span class="k">if</span> <span class="n">hide_xalpha</span> <span class="ow">and</span> <span class="n">_skip_xalpha</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">r</span><span class="p">):</span>
+                        <span class="k">continue</span>
 
-                        <span class="c1"># networkx doesn&#39;t seem to keep the edges in</span>
-                        <span class="c1"># any particular order, so we associate data</span>
-                        <span class="c1"># to the edges here directly, in this case,</span>
-                        <span class="c1"># the reaction rate, which will be used to</span>
-                        <span class="c1"># color it</span>
-                        <span class="c1"># here real means that it is not an approximate rate</span>
+                    <span class="c1"># networkx doesn&#39;t seem to keep the edges in</span>
+                    <span class="c1"># any particular order, so we associate data</span>
+                    <span class="c1"># to the edges here directly, in this case,</span>
+                    <span class="c1"># the reaction rate, which will be used to</span>
+                    <span class="c1"># color it</span>
+                    <span class="c1"># here real means that it is not an approximate rate</span>
 
-                        <span class="k">if</span> <span class="n">ydots</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-                            <span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)],</span> <span class="n">weight</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-                        <span class="k">else</span><span class="p">:</span>
-                            <span class="k">if</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">invisible_rates</span><span class="p">:</span>
-                                <span class="k">continue</span>
-                            <span class="k">try</span><span class="p">:</span>
-                                <span class="n">rate_weight</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">ydots</span><span class="p">[</span><span class="n">r</span><span class="p">])</span>
-                            <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-                                <span class="c1"># if ydots[r] is zero, then set the weight</span>
-                                <span class="c1"># to roughly the minimum exponent possible</span>
-                                <span class="c1"># for python floats</span>
-                                <span class="n">rate_weight</span> <span class="o">=</span> <span class="o">-</span><span class="mi">308</span>
+                    <span class="k">if</span> <span class="n">ydots</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)],</span> <span class="n">weight</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                        <span class="k">continue</span>
+                    <span class="k">if</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">invisible_rates</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">rate_weight</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">ydots</span><span class="p">[</span><span class="n">r</span><span class="p">])</span>
+                    <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+                        <span class="c1"># if ydots[r] is zero, then set the weight</span>
+                        <span class="c1"># to roughly the minimum exponent possible</span>
+                        <span class="c1"># for python floats</span>
+                        <span class="n">rate_weight</span> <span class="o">=</span> <span class="o">-</span><span class="mi">308</span>
 
-                            <span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)],</span> <span class="n">weight</span><span class="o">=</span><span class="n">rate_weight</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                    <span class="n">G</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">([(</span><span class="n">n</span><span class="p">,</span> <span class="n">p</span><span class="p">)],</span> <span class="n">weight</span><span class="o">=</span><span class="n">rate_weight</span><span class="p">,</span> <span class="n">real</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 
         <span class="c1"># now consider the rates that are approximated out of the network</span>
         <span class="n">rate_seen</span> <span class="o">=</span> <span class="p">[]</span>
@@ -1279,6 +1517,7 @@
         <span class="n">_ydot</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">_ydot</span><span class="p">)</span>
         <span class="n">valid_max</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">_ydot</span><span class="p">[</span><span class="n">_ydot</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
 
+        <span class="c1"># pylint: disable-next=redundant-keyword-arg</span>
         <span class="n">norm</span> <span class="o">=</span> <span class="n">SymLogNorm</span><span class="p">(</span><span class="n">valid_max</span><span class="o">/</span><span class="mf">1.e15</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=-</span><span class="n">valid_max</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="n">valid_max</span><span class="p">)</span>
 
         <span class="c1"># if there are a lot of rates, we split the network chart into</span>
