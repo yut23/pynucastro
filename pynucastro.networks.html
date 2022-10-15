@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pynucastro.networks package &mdash; pynucastro 1.6.0.post159+gf7fc811 documentation</title>
+  <title>pynucastro.networks package &mdash; pynucastro 1.6.0.post218+g5657615 documentation</title>
       <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -17,8 +17,9 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -63,8 +64,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced Usage</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="screening-examples.html">Screening Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modify-example.html">Modifying Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="approx-rates-examples.html">Approximate Rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unimportant-rates.html">Removing Unimportant Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="partition-function.html">Reverse Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="NSE-example.html">Nuclear Statistical Equilibrium</a></li>
 </ul>
@@ -75,6 +78,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="citing.html">Citing pynucastro</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">API</a><ul class="current">
 <li class="toctree-l2 current"><a class="reference internal" href="pynucastro.html">pynucastro package</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="pynucastro.html#library">library</a></li>
@@ -147,8 +151,8 @@
     text-align: unset;
 }
 </style>
-<section id="module-pynucastro.networks">
-<span id="pynucastro-networks-package"></span><h1>pynucastro.networks package<a class="headerlink" href="#module-pynucastro.networks" title="Permalink to this heading">¶</a></h1>
+<section id="pynucastro-networks-package">
+<h1>pynucastro.networks package<a class="headerlink" href="#pynucastro-networks-package" title="Permalink to this heading">¶</a></h1>
 <p>The pynucastro modules that support the creation of networks.
 There are several main submodules here:</p>
 <p><a class="reference internal" href="#module-pynucastro.networks.rate_collection" title="pynucastro.networks.rate_collection"><code class="xref py py-meth docutils literal notranslate"><span class="pre">rate_collection</span></code></a>: this is
@@ -160,23 +164,19 @@ support routines to generate a full, integrable network in python.</p>
 <p><a class="reference internal" href="#module-pynucastro.networks.base_cxx_network" title="pynucastro.networks.base_cxx_network"><code class="xref py py-meth docutils literal notranslate"><span class="pre">base_cxx_network</span></code></a>:
 the support routines to generate a standalone integrable network in
 pure C++.</p>
-<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">starkiller_network</span></code>:
-the support routines to generate a network that can be incorporated
-into the StarKiller microphysics routines supported by astrophysical
-hydrodynamics codes.</p>
-<p><a class="reference internal" href="#module-pynucastro.networks.starkiller_cxx_network" title="pynucastro.networks.starkiller_cxx_network"><code class="xref py py-meth docutils literal notranslate"><span class="pre">starkiller_cxx_network</span></code></a>:
+<p><a class="reference internal" href="#module-pynucastro.networks.amrexastro_cxx_network" title="pynucastro.networks.amrexastro_cxx_network"><code class="xref py py-meth docutils literal notranslate"><span class="pre">anrexastro_cxx_network</span></code></a>:
 the support routines to generate a C++ network that can be incorporated
-into the StarKiller microphysics routines supported by astrophysical
+into the AMReX-Astro Microphysics routines supported by astrophysical
 hydrodynamics codes.</p>
-<section id="submodules">
+<span class="target" id="module-pynucastro.networks"></span><section id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this heading">¶</a></h2>
 </section>
-<section id="module-pynucastro.networks.base_cxx_network">
-<span id="pynucastro-networks-base-cxx-network-module"></span><h2>pynucastro.networks.base_cxx_network module<a class="headerlink" href="#module-pynucastro.networks.base_cxx_network" title="Permalink to this heading">¶</a></h2>
+<section id="pynucastro-networks-base-cxx-network-module">
+<h2>pynucastro.networks.base_cxx_network module<a class="headerlink" href="#pynucastro-networks-base-cxx-network-module" title="Permalink to this heading">¶</a></h2>
 <p>Support for a pure C++ reaction network.  These functions will
 write the C++ code necessary to integrate a reaction network
 comprised of the rates that are passed in.</p>
-<dl class="py class">
+<span class="target" id="module-pynucastro.networks.base_cxx_network"></span><dl class="py class">
 <dt class="sig sig-object py" id="pynucastro.networks.base_cxx_network.BaseCxxNetwork">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pynucastro.networks.base_cxx_network.</span></span><span class="sig-name descname"><span class="pre">BaseCxxNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/networks/base_cxx_network.html#BaseCxxNetwork"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.networks.base_cxx_network.BaseCxxNetwork" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">ABC</span></code>, <a class="reference internal" href="#pynucastro.networks.rate_collection.RateCollection" title="pynucastro.networks.rate_collection.RateCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">RateCollection</span></code></a></p>
@@ -206,14 +206,11 @@ value is a list of tuples, with the forward-reverse pairs of a rate</p>
 </dd></dl>
 
 </section>
-<section id="pynucastro-networks-base-fortran-network-module">
-<h2>pynucastro.networks.base_fortran_network module<a class="headerlink" href="#pynucastro-networks-base-fortran-network-module" title="Permalink to this heading">¶</a></h2>
-</section>
-<section id="module-pynucastro.networks.python_network">
-<span id="pynucastro-networks-python-network-module"></span><h2>pynucastro.networks.python_network module<a class="headerlink" href="#module-pynucastro.networks.python_network" title="Permalink to this heading">¶</a></h2>
+<section id="pynucastro-networks-python-network-module">
+<h2>pynucastro.networks.python_network module<a class="headerlink" href="#pynucastro-networks-python-network-module" title="Permalink to this heading">¶</a></h2>
 <p>Support modules to write a pure python reaction network ODE
 source</p>
-<dl class="py class">
+<span class="target" id="module-pynucastro.networks.python_network"></span><dl class="py class">
 <dt class="sig sig-object py" id="pynucastro.networks.python_network.PythonNetwork">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pynucastro.networks.python_network.</span></span><span class="sig-name descname"><span class="pre">PythonNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rate_files</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">libraries</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">precedence</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inert_nuclei</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">symmetric_screening</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">do_screening</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/networks/python_network.html#PythonNetwork"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.networks.python_network.PythonNetwork" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pynucastro.networks.rate_collection.RateCollection" title="pynucastro.networks.rate_collection.RateCollection"><code class="xref py py-class docutils literal notranslate"><span class="pre">RateCollection</span></code></a></p>
@@ -230,14 +227,25 @@ source</p>
 <dd><p>construct the python form of dY(nucleus)/dt</p>
 </dd></dl>
 
+<dl class="py method">
+<dt class="sig sig-object py" id="pynucastro.networks.python_network.PythonNetwork.rates_string">
+<span class="sig-name descname"><span class="pre">rates_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/networks/python_network.html#PythonNetwork.rates_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.networks.python_network.PythonNetwork.rates_string" title="Permalink to this definition">¶</a></dt>
+<dd><p>section for evaluating the rates and storing them in rate_eval</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pynucastro.networks.python_network.PythonNetwork.screening_string">
+<span class="sig-name descname"><span class="pre">screening_string</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">indent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/networks/python_network.html#PythonNetwork.screening_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.networks.python_network.PythonNetwork.screening_string" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
 </dd></dl>
 
 </section>
-<section id="module-pynucastro.networks.rate_collection">
-<span id="pynucastro-networks-rate-collection-module"></span><h2>pynucastro.networks.rate_collection module<a class="headerlink" href="#module-pynucastro.networks.rate_collection" title="Permalink to this heading">¶</a></h2>
+<section id="pynucastro-networks-rate-collection-module">
+<h2>pynucastro.networks.rate_collection module<a class="headerlink" href="#pynucastro-networks-rate-collection-module" title="Permalink to this heading">¶</a></h2>
 <p>A collection of classes and methods to deal with collections of
 rates that together make up a network.</p>
-<dl class="py class">
+<span class="target" id="module-pynucastro.networks.rate_collection"></span><dl class="py class">
 <dt class="sig sig-object py" id="pynucastro.networks.rate_collection.Composition">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pynucastro.networks.rate_collection.</span></span><span class="sig-name descname"><span class="pre">Composition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">nuclei</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">small</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-16</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/networks/rate_collection.html#Composition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.networks.rate_collection.Composition" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -351,8 +359,18 @@ for a specific density, temperature, and composition</p>
 </dd></dl>
 
 <dl class="py method">
-<dt class="sig sig-object py" id="pynucastro.networks.rate_collection.RateCollection.get_comp_NSE">
-<span class="sig-name descname"><span class="pre">get_comp_NSE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rho</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ye</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(-3.5,</span> <span class="pre">-15.0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.5e-09</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tell_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/networks/rate_collection.html#RateCollection.get_comp_NSE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.networks.rate_collection.RateCollection.get_comp_NSE" title="Permalink to this definition">¶</a></dt>
+<dt class="sig sig-object py" id="pynucastro.networks.rate_collection.RateCollection.find_unimportant_rates">
+<span class="sig-name descname"><span class="pre">find_unimportant_rates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">states</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cutoff_ratio</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">screen_func</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/networks/rate_collection.html#RateCollection.find_unimportant_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.networks.rate_collection.RateCollection.find_unimportant_rates" title="Permalink to this definition">¶</a></dt>
+<dd><p>evaluate the rates at multiple thermodynamic states, and find the
+rates that are always less than <cite>cutoff_ratio</cite> times the fastest rate
+for each state</p>
+<p>Here, states is a list of tuple of the form (density, temperature, composition),
+where composition is of type <cite>Composition</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pynucastro.networks.rate_collection.RateCollection.get_comp_nse">
+<span class="sig-name descname"><span class="pre">get_comp_nse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rho</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ye</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">init_guess</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(-3.5,</span> <span class="pre">-15)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1e-11</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_coulomb_corr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_sol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/networks/rate_collection.html#RateCollection.get_comp_nse"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.networks.rate_collection.RateCollection.get_comp_nse" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns the NSE composition given density, temperature and prescribed electron fraction
 using scipy.fsolve, <cite>tol</cite> is an optional parameter for the tolerance of scipy.fsolve.
 init_guess is optional, however one should change init_guess accordingly if unable or
@@ -377,6 +395,13 @@ when calling this method multiple times such as making a plot.</p>
 <dt class="sig sig-object py" id="pynucastro.networks.rate_collection.RateCollection.get_nuclei_latex_string">
 <span class="sig-name descname"><span class="pre">get_nuclei_latex_string</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/networks/rate_collection.html#RateCollection.get_nuclei_latex_string"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.networks.rate_collection.RateCollection.get_nuclei_latex_string" title="Permalink to this definition">¶</a></dt>
 <dd><p>return a string listing the nuclei in latex format</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pynucastro.networks.rate_collection.RateCollection.get_nuclei_needing_partition_functions">
+<span class="sig-name descname"><span class="pre">get_nuclei_needing_partition_functions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/networks/rate_collection.html#RateCollection.get_nuclei_needing_partition_functions"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.networks.rate_collection.RateCollection.get_nuclei_needing_partition_functions" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a list of the nuclei that require partition
+functions for one or more DerivedRates in the collection</p>
 </dd></dl>
 
 <dl class="py method">
@@ -488,7 +513,7 @@ effective approximate rate.</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pynucastro.networks.rate_collection.RateCollection.plot">
-<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(800,</span> <span class="pre">600)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydot_cutoff_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_font_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">13</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'#A0CBE2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'o'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curved_edges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Z_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">always_show_p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">always_show_alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide_xalpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nucleus_filter_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate_filter_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/networks/rate_collection.html#RateCollection.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.networks.rate_collection.RateCollection.plot" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">outfile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">T</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(800,</span> <span class="pre">600)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dpi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ydot_cutoff_value</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">show_small_ydot</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_font_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">13</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'#A0CBE2'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_shape</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'o'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">curved_edges</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">N_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Z_range</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rotated</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">always_show_p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">always_show_alpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide_xp</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide_xalpha</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nucleus_filter_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rate_filter_function</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/networks/rate_collection.html#RateCollection.plot"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.networks.rate_collection.RateCollection.plot" title="Permalink to this definition">¶</a></dt>
 <dd><p>Make a plot of the network structure showing the links between
 nuclei.  If a full set of thermodymamic conditions are
 provided (rho, T, comp), then the links are colored by rate
@@ -502,6 +527,8 @@ strength.</p>
 <p>title: title to display on the plot</p>
 <p>ydot_cutoff_value: rate threshold below which we do not show a
 line corresponding to a rate</p>
+<p>show_small_ydot: if true, then show visibile lines for rates below
+ydot_cutoff_value</p>
 <p>node_size: size of a node</p>
 <p>node_font_size: size of the font used to write the isotope in the node</p>
 <p>node_color: color to make the nodes</p>
@@ -517,6 +544,8 @@ we don’t have 3-alpha</p>
 <p>hide_xalpha=False: dont connect the links to alpha for heavy
 nuclei reactions of the form A(alpha,X)B or A(X,alpha)B,
 except if alpha is the heaviest product.</p>
+<p>hide_xp=False: dont connect the links to p for heavy
+nuclei reactions of the form A(p,X)B or A(X,p)B.</p>
 <p>nucleus_filter_funcion: name of a custom function that takes a
 Nucleus object and returns true or false if it is to be shown
 as a node.</p>
@@ -531,7 +560,7 @@ object and returns true or false if it is to be shown as an edge.</p>
 
 <dl class="py attribute">
 <dt class="sig sig-object py" id="pynucastro.networks.rate_collection.RateCollection.pynucastro_dir">
-<span class="sig-name descname"><span class="pre">pynucastro_dir</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/opt/hostedtoolcache/Python/3.8.13/x64/lib/python3.8/site-packages/pynucastro-1.6.0.post159+gf7fc811-py3.8.egg/pynucastro'</span></em><a class="headerlink" href="#pynucastro.networks.rate_collection.RateCollection.pynucastro_dir" title="Permalink to this definition">¶</a></dt>
+<span class="sig-name descname"><span class="pre">pynucastro_dir</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'/opt/hostedtoolcache/Python/3.10.7/x64/lib/python3.10/site-packages/pynucastro-1.6.0.post218+g5657615-py3.10.egg/pynucastro'</span></em><a class="headerlink" href="#pynucastro.networks.rate_collection.RateCollection.pynucastro_dir" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="py method">
@@ -546,6 +575,27 @@ object and returns true or false if it is to be shown as an edge.</p>
 <dd><p>remove the nuclei in nuc_list from the network along with any rates
 that directly involve them (this doesn’t affect approximate rates that
 may have these nuclei as hidden intermediate links)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pynucastro.networks.rate_collection.RateCollection.remove_rates">
+<span class="sig-name descname"><span class="pre">remove_rates</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rate_list</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/networks/rate_collection.html#RateCollection.remove_rates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.networks.rate_collection.RateCollection.remove_rates" title="Permalink to this definition">¶</a></dt>
+<dd><p>remove the rates in rate_list from the network.  Note, if
+rate list is a dict, then the keys are assumed to be the rates
+to remove</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pynucastro.networks.rate_collection.RateCollection.validate">
+<span class="sig-name descname"><span class="pre">validate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other_library</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">forward_only</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ostream</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/networks/rate_collection.html#RateCollection.validate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.networks.rate_collection.RateCollection.validate" title="Permalink to this definition">¶</a></dt>
+<dd><p>perform various checks on the library, comparing to other_library,
+to ensure that we are not missing important rates.  The idea
+is that self should be a reduced library where we filtered out
+a few rates and then we want to compare to the larger
+other_library to see if we missed something important.</p>
+<p>ostream is the I/O stream to send output to (for instance, a
+file object or StringIO object).  If it is None, then output
+is to stdout.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -571,26 +621,23 @@ list of all rates that match this pair of nuclei</p>
 </dd></dl>
 
 </section>
-<section id="module-pynucastro.networks.starkiller_cxx_network">
-<span id="pynucastro-networks-starkiller-cxx-network-module"></span><h2>pynucastro.networks.starkiller_cxx_network module<a class="headerlink" href="#module-pynucastro.networks.starkiller_cxx_network" title="Permalink to this heading">¶</a></h2>
-<p>A C++ reaction network for integration into the StarKiller
+<section id="pynucastro-networks-amrexastro-cxx-network-module">
+<h2>pynucastro.networks.amrexastro_cxx_network module<a class="headerlink" href="#pynucastro-networks-amrexastro-cxx-network-module" title="Permalink to this heading">¶</a></h2>
+<p>A C++ reaction network for integration into the AMReX Astro
 Microphysics set of reaction networks used by astrophysical hydrodynamics
 codes</p>
-<dl class="py class">
-<dt class="sig sig-object py" id="pynucastro.networks.starkiller_cxx_network.StarKillerCxxNetwork">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pynucastro.networks.starkiller_cxx_network.</span></span><span class="sig-name descname"><span class="pre">StarKillerCxxNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/networks/starkiller_cxx_network.html#StarKillerCxxNetwork"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.networks.starkiller_cxx_network.StarKillerCxxNetwork" title="Permalink to this definition">¶</a></dt>
+<span class="target" id="module-pynucastro.networks.amrexastro_cxx_network"></span><dl class="py class">
+<dt class="sig sig-object py" id="pynucastro.networks.amrexastro_cxx_network.AmrexAstroCxxNetwork">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pynucastro.networks.amrexastro_cxx_network.</span></span><span class="sig-name descname"><span class="pre">AmrexAstroCxxNetwork</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pynucastro/networks/amrexastro_cxx_network.html#AmrexAstroCxxNetwork"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.networks.amrexastro_cxx_network.AmrexAstroCxxNetwork" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#pynucastro.networks.base_cxx_network.BaseCxxNetwork" title="pynucastro.networks.base_cxx_network.BaseCxxNetwork"><code class="xref py py-class docutils literal notranslate"><span class="pre">BaseCxxNetwork</span></code></a></p>
 </dd></dl>
 
 </section>
-<section id="pynucastro-networks-starkiller-network-module">
-<h2>pynucastro.networks.starkiller_network module<a class="headerlink" href="#pynucastro-networks-starkiller-network-module" title="Permalink to this heading">¶</a></h2>
-</section>
-<section id="module-pynucastro.networks.sympy_network_support">
-<span id="pynucastro-networks-sympy-network-support-module"></span><h2>pynucastro.networks.sympy_network_support module<a class="headerlink" href="#module-pynucastro.networks.sympy_network_support" title="Permalink to this heading">¶</a></h2>
+<section id="pynucastro-networks-sympy-network-support-module">
+<h2>pynucastro.networks.sympy_network_support module<a class="headerlink" href="#pynucastro-networks-sympy-network-support-module" title="Permalink to this heading">¶</a></h2>
 <p>This is a module that interprets the rates, ydots, and Jacobian
 through sympy</p>
-<dl class="py class">
+<span class="target" id="module-pynucastro.networks.sympy_network_support"></span><dl class="py class">
 <dt class="sig sig-object py" id="pynucastro.networks.sympy_network_support.SympyRates">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pynucastro.networks.sympy_network_support.</span></span><span class="sig-name descname"><span class="pre">SympyRates</span></span><a class="reference internal" href="_modules/pynucastro/networks/sympy_network_support.html#SympyRates"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pynucastro.networks.sympy_network_support.SympyRates" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
@@ -642,7 +689,7 @@ the ydot term for nuclide y_i.</p>
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Michael Zingale and Donald Willcox.</p>
+    <p>&#169; Copyright 2022, pynucastro development team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pynucastro.nucdata.nucleus &mdash; pynucastro 1.6.0.post159+gf7fc811 documentation</title>
+  <title>pynucastro.nucdata.nucleus &mdash; pynucastro 1.6.0.post218+g5657615 documentation</title>
       <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -16,8 +16,9 @@
         <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="../../../_static/doctools.js"></script>
+        <script src="../../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="../../../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" /> 
@@ -60,8 +61,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced Usage</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../screening-examples.html">Screening Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modify-example.html">Modifying Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../approx-rates-examples.html">Approximate Rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../unimportant-rates.html">Removing Unimportant Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../partition-function.html">Reverse Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../NSE-example.html">Nuclear Statistical Equilibrium</a></li>
 </ul>
@@ -72,6 +75,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing pynucastro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources.html">Third Party Data</a></li>
 </ul>
@@ -127,7 +131,7 @@
 <span class="n">_mass_table</span> <span class="o">=</span> <span class="n">MassTable</span><span class="p">()</span>
 
 <span class="c1">#read the spin table once and store it at the module-level</span>
-<span class="n">_spin_table</span> <span class="o">=</span> <span class="n">SpinTable</span><span class="p">(</span><span class="n">set_double_gs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">_spin_table</span> <span class="o">=</span> <span class="n">SpinTable</span><span class="p">(</span><span class="n">reliable</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
 <span class="c1"># read the binding energy table once and store it at the module-level</span>
 <span class="n">_binding_table</span> <span class="o">=</span> <span class="n">BindingTable</span><span class="p">()</span>
@@ -221,7 +225,10 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">el</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">el</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
 
         <span class="c1"># set a partition function object to every nucleus</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">partition_function</span> <span class="o">=</span> <span class="n">_pcollection</span><span class="o">.</span><span class="n">get_partition_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">short_spec_name</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">partition_function</span> <span class="o">=</span> <span class="n">_pcollection</span><span class="o">.</span><span class="n">get_partition_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">short_spec_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">partition_function</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># atomic number comes from periodic table</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;n&quot;</span><span class="p">:</span>
@@ -246,7 +253,6 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">nucbind</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># Now we will define the Nuclear Mass,</span>
-
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">A_nuc</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">)</span> <span class="o">+</span> <span class="n">_mass_table</span><span class="o">.</span><span class="n">get_mass_diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">short_spec_name</span><span class="p">)</span><span class="o">.</span><span class="n">dm</span> <span class="o">/</span> <span class="n">m_u</span>
         <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
@@ -294,7 +300,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Michael Zingale and Donald Willcox.</p>
+    <p>&#169; Copyright 2022, pynucastro development team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pynucastro &mdash; pynucastro 1.6.0.post159+gf7fc811 documentation</title>
+  <title>pynucastro &mdash; pynucastro 1.6.0.post218+g5657615 documentation</title>
       <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -17,13 +17,14 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pynucastro package" href="pynucastro.html" />
-    <link rel="prev" title="C++ Networks" href="cxx-networks.html" /> 
+    <link rel="prev" title="Citing pynucastro" href="citing.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -63,8 +64,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced Usage</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="screening-examples.html">Screening Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modify-example.html">Modifying Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="approx-rates-examples.html">Approximate Rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unimportant-rates.html">Removing Unimportant Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="partition-function.html">Reverse Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="NSE-example.html">Nuclear Statistical Equilibrium</a></li>
 </ul>
@@ -75,6 +78,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="citing.html">Citing pynucastro</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">API</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pynucastro.html">pynucastro package</a></li>
 </ul>
@@ -144,22 +148,20 @@
 <li class="toctree-l2"><a class="reference internal" href="pynucastro.html#subpackages">Subpackages</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pynucastro.networks.html">pynucastro.networks package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="pynucastro.networks.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pynucastro.networks.html#module-pynucastro.networks.base_cxx_network">pynucastro.networks.base_cxx_network module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pynucastro.networks.html#pynucastro-networks-base-fortran-network-module">pynucastro.networks.base_fortran_network module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pynucastro.networks.html#module-pynucastro.networks.python_network">pynucastro.networks.python_network module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pynucastro.networks.html#module-pynucastro.networks.rate_collection">pynucastro.networks.rate_collection module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pynucastro.networks.html#module-pynucastro.networks.starkiller_cxx_network">pynucastro.networks.starkiller_cxx_network module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pynucastro.networks.html#pynucastro-networks-starkiller-network-module">pynucastro.networks.starkiller_network module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pynucastro.networks.html#module-pynucastro.networks.sympy_network_support">pynucastro.networks.sympy_network_support module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pynucastro.networks.html#pynucastro-networks-base-cxx-network-module">pynucastro.networks.base_cxx_network module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pynucastro.networks.html#pynucastro-networks-python-network-module">pynucastro.networks.python_network module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pynucastro.networks.html#pynucastro-networks-rate-collection-module">pynucastro.networks.rate_collection module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pynucastro.networks.html#pynucastro-networks-amrexastro-cxx-network-module">pynucastro.networks.amrexastro_cxx_network module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pynucastro.networks.html#pynucastro-networks-sympy-network-support-module">pynucastro.networks.sympy_network_support module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pynucastro.nucdata.html">pynucastro.nucdata package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="pynucastro.nucdata.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pynucastro.nucdata.html#module-pynucastro.nucdata.binding_nuclide">pynucastro.nucdata.binding_nuclide module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pynucastro.nucdata.html#module-pynucastro.nucdata.binding_table">pynucastro.nucdata.binding_table module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pynucastro.nucdata.html#pynucastro-nucdata-binding-table-module">pynucastro.nucdata.binding_table module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pynucastro.nucdata.html#module-pynucastro.nucdata.elements">pynucastro.nucdata.elements module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pynucastro.nucdata.html#module-pynucastro.nucdata.mass_nuclide">pynucastro.nucdata.mass_nuclide module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pynucastro.nucdata.html#module-pynucastro.nucdata.nucleus">pynucastro.nucdata.nucleus module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pynucastro.nucdata.html#pynucastro-nucdata-nucleus-module">pynucastro.nucdata.nucleus module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pynucastro.nucdata.html#module-pynucastro.nucdata.partition_function">pynucastro.nucdata.partition_function module</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pynucastro.nucdata.html#module-pynucastro.nucdata.spin_nuclide">pynucastro.nucdata.spin_nuclide module</a></li>
 </ul>
@@ -167,12 +169,12 @@
 <li class="toctree-l3"><a class="reference internal" href="pynucastro.rates.html">pynucastro.rates package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="pynucastro.rates.html#submodules">Submodules</a></li>
 <li class="toctree-l4"><a class="reference internal" href="pynucastro.rates.html#module-pynucastro.rates.library">pynucastro.rates.library module</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pynucastro.rates.html#module-pynucastro.rates.rate">pynucastro.rates.rate module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pynucastro.rates.html#pynucastro-rates-rate-module">pynucastro.rates.rate module</a></li>
 </ul>
 </li>
 <li class="toctree-l3"><a class="reference internal" href="pynucastro.screening.html">pynucastro.screening package</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="pynucastro.screening.html#submodules">Submodules</a></li>
-<li class="toctree-l4"><a class="reference internal" href="pynucastro.screening.html#module-pynucastro.screening.screen">pynucastro.screening.screen module</a></li>
+<li class="toctree-l4"><a class="reference internal" href="pynucastro.screening.html#pynucastro-screening-screen-module">pynucastro.screening.screen module</a></li>
 </ul>
 </li>
 </ul>
@@ -187,14 +189,14 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="cxx-networks.html" class="btn btn-neutral float-left" title="C++ Networks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="citing.html" class="btn btn-neutral float-left" title="Citing pynucastro" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="pynucastro.html" class="btn btn-neutral float-right" title="pynucastro package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Michael Zingale and Donald Willcox.</p>
+    <p>&#169; Copyright 2022, pynucastro development team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

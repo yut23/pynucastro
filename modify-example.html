@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Modifying Rates &mdash; pynucastro 1.6.0.post159+gf7fc811 documentation</title>
+  <title>Modifying Rates &mdash; pynucastro 1.6.0.post218+g5657615 documentation</title>
       <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -17,15 +17,16 @@
         <script src="_static/underscore.js"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
+        <script src="_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
-        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.1/dist/embed-amd.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
         <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
         <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Approximate Rates" href="approx-rates-examples.html" />
-    <link rel="prev" title="Combining ReacLib Rates with Electron Capture Tables" href="electron-captures.html" /> 
+    <link rel="prev" title="Screening Rates" href="screening-examples.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -65,8 +66,10 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced Usage</span></p>
 <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="screening-examples.html">Screening Rates</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Modifying Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="approx-rates-examples.html">Approximate Rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="unimportant-rates.html">Removing Unimportant Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="partition-function.html">Reverse Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="NSE-example.html">Nuclear Statistical Equilibrium</a></li>
 </ul>
@@ -77,6 +80,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
+<li class="toctree-l1"><a class="reference internal" href="citing.html">Citing pynucastro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sources.html">Third Party Data</a></li>
 </ul>
@@ -419,9 +423,9 @@ div.rendered_html tbody tr:hover {
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-c12 + c12 --&gt; he4 + ne20       [Q =   4.62 MeV] (c12 + c12 --&gt; he4 + ne20 &lt;cf88_reaclib__&gt;)
-c12 + c12 --&gt; p + na23         [Q =   2.24 MeV] (c12 + c12 --&gt; p + na23 &lt;cf88_reaclib__&gt;)
-c12 + c12 --&gt; n + mg23         [Q =  -2.60 MeV] (c12 + c12 --&gt; n + mg23 &lt;cf88_reaclib__reverse&gt;)
+C12 + C12 ⟶ He4 + Ne20         [Q =   4.62 MeV] (c12 + c12 --&gt; he4 + ne20 &lt;cf88_reaclib__&gt;)
+C12 + C12 ⟶ p + Na23           [Q =   2.24 MeV] (c12 + c12 --&gt; p + na23 &lt;cf88_reaclib__&gt;)
+C12 + C12 ⟶ n + Mg23           [Q =  -2.60 MeV] (c12 + c12 --&gt; n + mg23 &lt;cf88_reaclib__reverse&gt;)
 </pre></div></div>
 </div>
 <p>The rate <span class="math notranslate nohighlight">\({}^{12}\mathrm{C}({}^{12}\mathrm{C},n){}^{23}\mathrm{Mg}\)</span> is quickly followed by <span class="math notranslate nohighlight">\({}^{23}\mathrm{Mg}(n,\gamma){}^{24}\mathrm{Mg}\)</span>, so we want to modify that rate sequence to just be <span class="math notranslate nohighlight">\({}^{12}\mathrm{C}({}^{12}\mathrm{C},\gamma){}^{24}\mathrm{Mg}\)</span></p>
@@ -440,7 +444,7 @@ c12 + c12 --&gt; n + mg23         [Q =  -2.60 MeV] (c12 + c12 --&gt; n + mg23 &l
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-c12 + c12 --&gt; n + mg23
+C12 + C12 ⟶ n + Mg23
 </pre></div></div>
 </div>
 <p>This has the Q value:</p>
@@ -477,7 +481,7 @@ c12 + c12 --&gt; n + mg23
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-c12 + c12 --&gt; mg24
+C12 + C12 ⟶ Mg24 + 𝛾
 </pre></div></div>
 </div>
 <p>and we see that the Q value has been updated to reflect the new endpoint</p>
@@ -530,25 +534,25 @@ c12 + c12 --&gt; mg24
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-he4 + he4 + he4 --&gt; c12        [Q =   7.28 MeV] (he4 + he4 + he4 --&gt; c12 &lt;fy05_reaclib__&gt;)
-c12 + he4 --&gt; o16              [Q =   7.16 MeV] (c12 + he4 --&gt; o16 &lt;nac2_reaclib__&gt;)
-c12 + c12 --&gt; he4 + ne20       [Q =   4.62 MeV] (c12 + c12 --&gt; he4 + ne20 &lt;cf88_reaclib__&gt;)
-c12 + c12 --&gt; p + na23         [Q =   2.24 MeV] (c12 + c12 --&gt; p + na23 &lt;cf88_reaclib__&gt;)
-o16 + he4 --&gt; ne20             [Q =   4.73 MeV] (o16 + he4 --&gt; ne20 &lt;co10_reaclib__&gt;)
-o16 + c12 --&gt; he4 + mg24       [Q =   6.77 MeV] (o16 + c12 --&gt; he4 + mg24 &lt;cf88_reaclib__&gt;)
-ne20 + he4 --&gt; mg24            [Q =   9.32 MeV] (ne20 + he4 --&gt; mg24 &lt;il10_reaclib__&gt;)
-na23 + p --&gt; he4 + ne20        [Q =   2.38 MeV] (na23 + p --&gt; he4 + ne20 &lt;il10_reaclib__&gt;)
-na23 + p --&gt; mg24              [Q =  11.69 MeV] (na23 + p --&gt; mg24 &lt;il10_reaclib__&gt;)
-c12 + c12 --&gt; mg24             [Q =  13.93 MeV] (c12 + c12 --&gt; mg24 &lt;cf88_reaclib__reverse&gt;)
-c12 --&gt; he4 + he4 + he4        [Q =  -7.28 MeV] (c12 --&gt; he4 + he4 + he4 &lt;fy05_reaclib__reverse&gt;)
-o16 --&gt; he4 + c12              [Q =  -7.16 MeV] (o16 --&gt; he4 + c12 &lt;nac2_reaclib__reverse&gt;)
-ne20 + he4 --&gt; c12 + c12       [Q =  -4.62 MeV] (ne20 + he4 --&gt; c12 + c12 &lt;cf88_reaclib__reverse&gt;)
-ne20 + he4 --&gt; p + na23        [Q =  -2.38 MeV] (ne20 + he4 --&gt; p + na23 &lt;il10_reaclib__reverse&gt;)
-ne20 --&gt; he4 + o16             [Q =  -4.73 MeV] (ne20 --&gt; he4 + o16 &lt;co10_reaclib__reverse&gt;)
-na23 + p --&gt; c12 + c12         [Q =  -2.24 MeV] (na23 + p --&gt; c12 + c12 &lt;cf88_reaclib__reverse&gt;)
-mg24 + he4 --&gt; c12 + o16       [Q =  -6.77 MeV] (mg24 + he4 --&gt; c12 + o16 &lt;cf88_reaclib__reverse&gt;)
-mg24 --&gt; he4 + ne20            [Q =  -9.32 MeV] (mg24 --&gt; he4 + ne20 &lt;il10_reaclib__reverse&gt;)
-mg24 --&gt; p + na23              [Q = -11.69 MeV] (mg24 --&gt; p + na23 &lt;il10_reaclib__reverse&gt;)
+He4 + He4 + He4 ⟶ C12 + 𝛾      [Q =   7.28 MeV] (he4 + he4 + he4 --&gt; c12 &lt;fy05_reaclib__&gt;)
+C12 + He4 ⟶ O16 + 𝛾            [Q =   7.16 MeV] (c12 + he4 --&gt; o16 &lt;nac2_reaclib__&gt;)
+C12 + C12 ⟶ He4 + Ne20         [Q =   4.62 MeV] (c12 + c12 --&gt; he4 + ne20 &lt;cf88_reaclib__&gt;)
+C12 + C12 ⟶ p + Na23           [Q =   2.24 MeV] (c12 + c12 --&gt; p + na23 &lt;cf88_reaclib__&gt;)
+O16 + He4 ⟶ Ne20 + 𝛾           [Q =   4.73 MeV] (o16 + he4 --&gt; ne20 &lt;co10_reaclib__&gt;)
+O16 + C12 ⟶ He4 + Mg24         [Q =   6.77 MeV] (o16 + c12 --&gt; he4 + mg24 &lt;cf88_reaclib__&gt;)
+Ne20 + He4 ⟶ Mg24 + 𝛾          [Q =   9.32 MeV] (ne20 + he4 --&gt; mg24 &lt;il10_reaclib__&gt;)
+Na23 + p ⟶ He4 + Ne20          [Q =   2.38 MeV] (na23 + p --&gt; he4 + ne20 &lt;il10_reaclib__&gt;)
+Na23 + p ⟶ Mg24 + 𝛾            [Q =  11.69 MeV] (na23 + p --&gt; mg24 &lt;il10_reaclib__&gt;)
+C12 + C12 ⟶ Mg24 + 𝛾           [Q =  13.93 MeV] (c12 + c12 --&gt; mg24 &lt;cf88_reaclib__reverse&gt;)
+C12 ⟶ He4 + He4 + He4          [Q =  -7.28 MeV] (c12 --&gt; he4 + he4 + he4 &lt;fy05_reaclib__reverse&gt;)
+O16 ⟶ He4 + C12                [Q =  -7.16 MeV] (o16 --&gt; he4 + c12 &lt;nac2_reaclib__reverse&gt;)
+Ne20 + He4 ⟶ C12 + C12         [Q =  -4.62 MeV] (ne20 + he4 --&gt; c12 + c12 &lt;cf88_reaclib__reverse&gt;)
+Ne20 + He4 ⟶ p + Na23          [Q =  -2.38 MeV] (ne20 + he4 --&gt; p + na23 &lt;il10_reaclib__reverse&gt;)
+Ne20 ⟶ He4 + O16               [Q =  -4.73 MeV] (ne20 --&gt; he4 + o16 &lt;co10_reaclib__reverse&gt;)
+Na23 + p ⟶ C12 + C12           [Q =  -2.24 MeV] (na23 + p --&gt; c12 + c12 &lt;cf88_reaclib__reverse&gt;)
+Mg24 + He4 ⟶ C12 + O16         [Q =  -6.77 MeV] (mg24 + he4 --&gt; c12 + o16 &lt;cf88_reaclib__reverse&gt;)
+Mg24 ⟶ He4 + Ne20              [Q =  -9.32 MeV] (mg24 --&gt; he4 + ne20 &lt;il10_reaclib__reverse&gt;)
+Mg24 ⟶ p + Na23                [Q = -11.69 MeV] (mg24 --&gt; p + na23 &lt;il10_reaclib__reverse&gt;)
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -573,14 +577,14 @@ mg24 --&gt; p + na23              [Q = -11.69 MeV] (mg24 --&gt; p + na23 &lt;il1
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="electron-captures.html" class="btn btn-neutral float-left" title="Combining ReacLib Rates with Electron Capture Tables" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="screening-examples.html" class="btn btn-neutral float-left" title="Screening Rates" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="approx-rates-examples.html" class="btn btn-neutral float-right" title="Approximate Rates" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, Michael Zingale and Donald Willcox.</p>
+    <p>&#169; Copyright 2022, pynucastro development team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
