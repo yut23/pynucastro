@@ -3,10 +3,10 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pynucastro.nucdata.nucleus &mdash; pynucastro 1.6.0.post218+g5657615 documentation</title>
-      <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+  <title>pynucastro.nucdata.nucleus &mdash; pynucastro 1.6.0.post263+gbba2630 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
@@ -29,15 +29,19 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="../../../index.html" class="icon icon-home"> pynucastro
-            <img src="../../../_static/logo.png" class="logo" alt="Logo"/>
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            pynucastro
+              <img src="../../../_static/logo.png" class="logo" alt="Logo"/>
           </a>
               <div class="version">
                 1.6
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
@@ -46,6 +50,8 @@
               <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Overview of pynucastro</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../data_sources.html">Data Sources and Rate Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Exploring Networks in Python</span></p>
 <ul>
@@ -93,9 +99,9 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
-          <li><a href="../../index.html">Module code</a> &raquo;</li>
-      <li>pynucastro.nucdata.nucleus</li>
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">pynucastro.nucdata.nucleus</li>
       <li class="wy-breadcrumbs-aside">
       </li>
   </ul>
@@ -116,9 +122,9 @@
 
 <span class="kn">from</span> <span class="nn">pynucastro.nucdata.binding_table</span> <span class="kn">import</span> <span class="n">BindingTable</span>
 <span class="kn">from</span> <span class="nn">pynucastro.nucdata.elements</span> <span class="kn">import</span> <span class="n">PeriodicTable</span>
-<span class="kn">from</span> <span class="nn">pynucastro.nucdata.mass_nuclide</span> <span class="kn">import</span> <span class="n">MassTable</span>
+<span class="kn">from</span> <span class="nn">pynucastro.nucdata.mass_table</span> <span class="kn">import</span> <span class="n">MassTable</span>
 <span class="kn">from</span> <span class="nn">pynucastro.nucdata.partition_function</span> <span class="kn">import</span> <span class="n">PartitionFunctionCollection</span>
-<span class="kn">from</span> <span class="nn">pynucastro.nucdata.spin_nuclide</span> <span class="kn">import</span> <span class="n">SpinTable</span>
+<span class="kn">from</span> <span class="nn">pynucastro.nucdata.spin_table</span> <span class="kn">import</span> <span class="n">SpinTable</span>
 
 <span class="n">_pynucastro_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span>
 <span class="n">_pynucastro_rates_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_pynucastro_dir</span><span class="p">,</span> <span class="s1">&#39;library&#39;</span><span class="p">)</span>
@@ -145,7 +151,7 @@
 
 
 <div class="viewcode-block" id="Nucleus"><a class="viewcode-back" href="../../../pynucastro.nucdata.html#pynucastro.nucdata.nucleus.Nucleus">[docs]</a><span class="k">class</span> <span class="nc">Nucleus</span><span class="p">:</span>
-    <span class="sd">&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    a nucleus that participates in a reaction -- we store it in a</span>
 <span class="sd">    class to hold its properties, define a sorting, and give it a</span>
 <span class="sd">    pretty printing string.</span>
@@ -215,20 +221,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">short_spec_name</span> <span class="o">=</span> <span class="n">name</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">caps_name</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span>
 
-        <span class="c1"># set the number of spin states</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">spin_states</span> <span class="o">=</span> <span class="n">_spin_table</span><span class="o">.</span><span class="n">get_spin_nuclide</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">short_spec_name</span><span class="p">)</span><span class="o">.</span><span class="n">spin_states</span>
-        <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">spin_states</span> <span class="o">=</span> <span class="kc">None</span>
-
         <span class="c1"># use lowercase element abbreviation regardless the case of the input</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">el</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">el</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
-
-        <span class="c1"># set a partition function object to every nucleus</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">partition_function</span> <span class="o">=</span> <span class="n">_pcollection</span><span class="o">.</span><span class="n">get_partition_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">short_spec_name</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">partition_function</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># atomic number comes from periodic table</span>
         <span class="k">if</span> <span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;n&quot;</span><span class="p">:</span>
@@ -246,15 +240,27 @@
             <span class="c1"># latex formatted style</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">pretty</span> <span class="o">=</span> <span class="sa">fr</span><span class="s2">&quot;</span><span class="se">{{}}</span><span class="s2">^</span><span class="se">{{</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="si">}</span><span class="se">}}</span><span class="s2">\mathrm</span><span class="se">{{</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">el</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span><span class="si">}</span><span class="se">}}</span><span class="s2">&quot;</span>
 
+        <span class="c1"># set the number of spin states</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">nucbind</span> <span class="o">=</span> <span class="n">_binding_table</span><span class="o">.</span><span class="n">get_nuclide</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="p">)</span><span class="o">.</span><span class="n">nucbind</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spin_states</span> <span class="o">=</span> <span class="n">_spin_table</span><span class="o">.</span><span class="n">get_spin_states</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">spin_states</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># set a partition function object to every nucleus</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">partition_function</span> <span class="o">=</span> <span class="n">_pcollection</span><span class="o">.</span><span class="n">get_partition_function</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">short_spec_name</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">partition_function</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nucbind</span> <span class="o">=</span> <span class="n">_binding_table</span><span class="o">.</span><span class="n">get_binding_energy</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">N</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="p">)</span>
         <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
             <span class="c1"># the binding energy table doesn&#39;t know about this nucleus</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">nucbind</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># Now we will define the Nuclear Mass,</span>
         <span class="k">try</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">A_nuc</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">)</span> <span class="o">+</span> <span class="n">_mass_table</span><span class="o">.</span><span class="n">get_mass_diff</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">short_spec_name</span><span class="p">)</span><span class="o">.</span><span class="n">dm</span> <span class="o">/</span> <span class="n">m_u</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">A_nuc</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">)</span> <span class="o">+</span> <span class="n">_mass_table</span><span class="o">.</span><span class="n">get_mass_diff</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">,</span> <span class="n">z</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="p">)</span> <span class="o">/</span> <span class="n">m_u</span>
         <span class="k">except</span> <span class="ne">NotImplementedError</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">A_nuc</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -272,11 +278,11 @@
         <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">Z</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">A</span><span class="p">))</span>
 
 <div class="viewcode-block" id="Nucleus.c"><a class="viewcode-back" href="../../../pynucastro.nucdata.html#pynucastro.nucdata.nucleus.Nucleus.c">[docs]</a>    <span class="k">def</span> <span class="nf">c</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;return the capitalized-style name&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;return the capitalized-style name&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">caps_name</span></div>
 
 <div class="viewcode-block" id="Nucleus.cindex"><a class="viewcode-back" href="../../../pynucastro.nucdata.html#pynucastro.nucdata.nucleus.Nucleus.cindex">[docs]</a>    <span class="k">def</span> <span class="nf">cindex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;return the name for C++ indexing&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;return the name for C++ indexing&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">short_spec_name</span><span class="o">.</span><span class="n">capitalize</span><span class="p">()</span></div>
 
     <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
