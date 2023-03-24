@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pynucastro.rates.rate &mdash; pynucastro 1.6.0.post263+gbba2630 documentation</title>
+  <title>pynucastro.rates.rate &mdash; pynucastro 1.6.0.post270+g5c95f2c documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
@@ -11,10 +11,9 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -153,7 +152,7 @@
         <span class="k">return</span> <span class="n">wrap</span><span class="p">(</span><span class="n">cls_or_spec</span><span class="p">)</span>
 
 
-<span class="kn">from</span> <span class="nn">pynucastro.nucdata</span> <span class="kn">import</span> <span class="n">Nucleus</span>
+<span class="kn">from</span> <span class="nn">pynucastro.nucdata</span> <span class="kn">import</span> <span class="n">Nucleus</span><span class="p">,</span> <span class="n">UnsupportedNucleus</span>
 
 <span class="n">amu_mev</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">physical_constants</span><span class="p">[</span><span class="s1">&#39;atomic mass constant energy equivalent in MeV&#39;</span><span class="p">]</span>
 <span class="n">hbar</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">physical_constants</span><span class="p">[</span><span class="s1">&#39;reduced Planck constant&#39;</span><span class="p">]</span>
@@ -168,15 +167,21 @@
 <span class="n">_pynucastro_tabular_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_pynucastro_rates_dir</span><span class="p">,</span> <span class="s1">&#39;tabular&#39;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="load_rate"><a class="viewcode-back" href="../../../pynucastro.rates.html#pynucastro.rates.rate.load_rate">[docs]</a><span class="k">def</span> <span class="nf">load_rate</span><span class="p">(</span><span class="n">rfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rfile_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<div class="viewcode-block" id="RateFileError"><a class="viewcode-back" href="../../../pynucastro.rates.html#pynucastro.rates.rate.RateFileError">[docs]</a><span class="k">class</span> <span class="nc">RateFileError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;An error occurred while trying to read a Rate from a file.&quot;&quot;&quot;</span></div>
 
+
+<div class="viewcode-block" id="load_rate"><a class="viewcode-back" href="../../../pynucastro.rates.html#pynucastro.rates.rate.load_rate">[docs]</a><span class="k">def</span> <span class="nf">load_rate</span><span class="p">(</span><span class="n">rfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rfile_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Try to load a rate of any type.</span>
+
+<span class="sd">    :raises: :class:`.RateFileError`, :class:`.UnsupportedNucleus`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">rate</span><span class="p">:</span> <span class="n">Rate</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">rate</span> <span class="o">=</span> <span class="n">TabularRate</span><span class="p">(</span><span class="n">rfile</span><span class="o">=</span><span class="n">rfile</span><span class="p">,</span> <span class="n">rfile_path</span><span class="o">=</span><span class="n">rfile_path</span><span class="p">)</span>
-    <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
-        <span class="k">try</span><span class="p">:</span>
-            <span class="n">rate</span> <span class="o">=</span> <span class="n">ReacLibRate</span><span class="p">(</span><span class="n">rfile</span><span class="o">=</span><span class="n">rfile</span><span class="p">,</span> <span class="n">rfile_path</span><span class="o">=</span><span class="n">rfile_path</span><span class="p">)</span>
-        <span class="k">except</span> <span class="ne">AssertionError</span><span class="p">:</span>
-            <span class="k">raise</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">RateFileError</span><span class="p">,</span> <span class="n">UnsupportedNucleus</span><span class="p">):</span>
+        <span class="n">rate</span> <span class="o">=</span> <span class="n">ReacLibRate</span><span class="p">(</span><span class="n">rfile</span><span class="o">=</span><span class="n">rfile</span><span class="p">,</span> <span class="n">rfile_path</span><span class="o">=</span><span class="n">rfile_path</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">rate</span></div>
 
@@ -202,7 +207,7 @@
         <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
 
     <span class="c1"># notify user we can&#39;t find the file</span>
-    <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File </span><span class="si">{</span><span class="n">ratename</span><span class="si">!r}</span><span class="s1"> not found in the working directory, </span><span class="si">{</span><span class="n">_pynucastro_rates_dir</span><span class="si">}</span><span class="s1">, or </span><span class="si">{</span><span class="n">_pynucastro_tabular_dir</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="k">raise</span> <span class="n">RateFileError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;File </span><span class="si">{</span><span class="n">ratename</span><span class="si">!r}</span><span class="s1"> not found in the working directory, </span><span class="si">{</span><span class="n">_pynucastro_rates_dir</span><span class="si">}</span><span class="s1">, or </span><span class="si">{</span><span class="n">_pynucastro_tabular_dir</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
 
 <span class="k">if</span> <span class="n">numba</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
@@ -591,11 +596,10 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">rid</span> <span class="o">+=</span> <span class="s2">&quot; + &quot;</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">pretty_string</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot; + &quot;</span>
 
-        <span class="k">if</span> <span class="n">lhs_other</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">lhs_other</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">o</span> <span class="o">==</span> <span class="s2">&quot;e-&quot;</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot; + e⁻&quot;</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">pretty_string</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot; + \mathrm</span><span class="si">{e}</span><span class="s2">^-&quot;</span>
+        <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">lhs_other</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">o</span> <span class="o">==</span> <span class="s2">&quot;e-&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot; + e⁻&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pretty_string</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot; + \mathrm</span><span class="si">{e}</span><span class="s2">^-&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot; ⟶ &quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rid</span> <span class="o">+=</span> <span class="s2">&quot; --&gt; &quot;</span>
@@ -610,23 +614,22 @@
                 <span class="bp">self</span><span class="o">.</span><span class="n">rid</span> <span class="o">+=</span> <span class="s2">&quot; + &quot;</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">pretty_string</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot; + &quot;</span>
 
-        <span class="k">if</span> <span class="n">rhs_other</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">rhs_other</span><span class="p">:</span>
-                <span class="k">if</span> <span class="n">o</span> <span class="o">==</span> <span class="s2">&quot;gamma&quot;</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot; + 𝛾&quot;</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">pretty_string</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot;+ \gamma&quot;</span>
-                <span class="k">elif</span> <span class="n">o</span> <span class="o">==</span> <span class="s2">&quot;nu&quot;</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot; + 𝜈&quot;</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">pretty_string</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot;+ \nu_e&quot;</span>
-                <span class="k">elif</span> <span class="n">o</span> <span class="o">==</span> <span class="s2">&quot;nubar&quot;</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot; + 𝜈&quot;</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">pretty_string</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot;+ \bar{\nu}_e&quot;</span>
-                <span class="k">if</span> <span class="n">o</span> <span class="o">==</span> <span class="s2">&quot;e-&quot;</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot; + e⁻&quot;</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">pretty_string</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot; + \mathrm</span><span class="si">{e}</span><span class="s2">^-&quot;</span>
-                <span class="k">if</span> <span class="n">o</span> <span class="o">==</span> <span class="s2">&quot;e+&quot;</span><span class="p">:</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot; + e⁺&quot;</span>
-                    <span class="bp">self</span><span class="o">.</span><span class="n">pretty_string</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot; + \mathrm</span><span class="si">{e}</span><span class="s2">^+&quot;</span>
+        <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">rhs_other</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">o</span> <span class="o">==</span> <span class="s2">&quot;gamma&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot; + 𝛾&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pretty_string</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot;+ \gamma&quot;</span>
+            <span class="k">elif</span> <span class="n">o</span> <span class="o">==</span> <span class="s2">&quot;nu&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot; + 𝜈&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pretty_string</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot;+ \nu_e&quot;</span>
+            <span class="k">elif</span> <span class="n">o</span> <span class="o">==</span> <span class="s2">&quot;nubar&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot; + 𝜈&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pretty_string</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot;+ \bar{\nu}_e&quot;</span>
+            <span class="k">if</span> <span class="n">o</span> <span class="o">==</span> <span class="s2">&quot;e-&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot; + e⁻&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pretty_string</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot; + \mathrm</span><span class="si">{e}</span><span class="s2">^-&quot;</span>
+            <span class="k">if</span> <span class="n">o</span> <span class="o">==</span> <span class="s2">&quot;e+&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">string</span> <span class="o">+=</span> <span class="s2">&quot; + e⁺&quot;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">pretty_string</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot; + \mathrm</span><span class="si">{e}</span><span class="s2">^+&quot;</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">pretty_string</span> <span class="o">+=</span> <span class="sa">r</span><span class="s2">&quot;$&quot;</span>
 
@@ -829,7 +832,7 @@
 
         <span class="c1"># composition dependence</span>
         <span class="n">Y_term</span> <span class="o">=</span> <span class="mf">1.0</span>
-        <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reactants</span><span class="p">))):</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reactants</span><span class="p">)):</span>
             <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reactants</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">r</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">y_i</span> <span class="o">==</span> <span class="n">r</span><span class="p">:</span>
                 <span class="c1"># take the derivative</span>
@@ -861,11 +864,13 @@
 <span class="sd">    can be composed of multiple sets, or a tabulated electron capture</span>
 <span class="sd">    rate.</span>
 
+<span class="sd">    :raises: :class:`.RateFileError`, :class:`.UnsupportedNucleus`</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rfile_path</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">chapter</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">original_source</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
                  <span class="n">reactants</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">products</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sets</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">labelprops</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">Q</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; rfile can be either a string specifying the path to a rate file or</span>
 <span class="sd">        an io.StringIO object from which to read rate information. &quot;&quot;&quot;</span>
+        <span class="c1"># pylint: disable=super-init-not-called</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">rfile_path</span> <span class="o">=</span> <span class="n">rfile_path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rfile</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1114,7 +1119,8 @@
                 <span class="n">check_chapter</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">check_chapter</span><span class="p">)</span>
                 <span class="c1"># check that the chapter number is the same as the first</span>
                 <span class="c1"># set in this rate file</span>
-                <span class="k">assert</span> <span class="n">check_chapter</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">chapter</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;read chapter </span><span class="si">{</span><span class="n">check_chapter</span><span class="si">}</span><span class="s1">, expected chapter </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">chapter</span><span class="si">}</span><span class="s1"> for this rate set.&#39;</span>
+                <span class="k">if</span> <span class="n">check_chapter</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">chapter</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">RateFileError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;read chapter </span><span class="si">{</span><span class="n">check_chapter</span><span class="si">}</span><span class="s1">, expected chapter </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">chapter</span><span class="si">}</span><span class="s1"> for this rate set.&#39;</span><span class="p">)</span>
                 <span class="c1"># get rid of chapter number so we can read a rate set</span>
                 <span class="n">set_lines</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
             <span class="k">except</span> <span class="p">(</span><span class="ne">TypeError</span><span class="p">,</span> <span class="ne">ValueError</span><span class="p">):</span>
@@ -1226,8 +1232,7 @@
                     <span class="bp">self</span><span class="o">.</span><span class="n">products</span> <span class="o">+=</span> <span class="p">[</span><span class="n">Nucleus</span><span class="o">.</span><span class="n">from_cache</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">Nucleus</span><span class="o">.</span><span class="n">from_cache</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="mi">2</span><span class="p">]),</span>
                                       <span class="n">Nucleus</span><span class="o">.</span><span class="n">from_cache</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="mi">3</span><span class="p">]),</span> <span class="n">Nucleus</span><span class="o">.</span><span class="n">from_cache</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="mi">4</span><span class="p">])]</span>
                 <span class="k">else</span><span class="p">:</span>
-                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Chapter could not be identified in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">original_source</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
-                    <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chapter</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">chapter</span> <span class="o">&lt;=</span> <span class="mi">11</span>
+                    <span class="k">raise</span> <span class="n">RateFileError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Chapter could not be identified in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">original_source</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
 
                 <span class="n">first</span> <span class="o">=</span> <span class="mi">0</span>
 
@@ -1340,6 +1345,7 @@
 
 <div class="viewcode-block" id="ReacLibRate.eval_deriv"><a class="viewcode-back" href="../../../pynucastro.rates.html#pynucastro.rates.rate.ReacLibRate.eval_deriv">[docs]</a>    <span class="k">def</span> <span class="nf">eval_deriv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">rhoY</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; evauate the derivative of reaction rate with respect to T &quot;&quot;&quot;</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="n">rhoY</span>  <span class="c1"># unused by this subclass</span>
 
         <span class="n">tf</span> <span class="o">=</span> <span class="n">Tfactors</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
         <span class="n">drdT</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -1377,6 +1383,7 @@
 <span class="sd">        :rtype: matplotlib.figure.Figure</span>
 
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_</span> <span class="o">=</span> <span class="p">(</span><span class="n">rhoYmin</span><span class="p">,</span> <span class="n">rhoYmax</span><span class="p">)</span>  <span class="c1"># unused by this subclass</span>
 
         <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="n">figsize</span><span class="p">)</span>
 
@@ -1402,10 +1409,14 @@
 
 
 <div class="viewcode-block" id="TabularRate"><a class="viewcode-back" href="../../../pynucastro.rates.html#pynucastro.rates.rate.TabularRate">[docs]</a><span class="k">class</span> <span class="nc">TabularRate</span><span class="p">(</span><span class="n">Rate</span><span class="p">):</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;A tabular rate.&quot;&quot;&quot;</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;A tabular rate.</span>
+
+<span class="sd">    :raises: :class:`.RateFileError`, :class:`.UnsupportedNucleus`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rfile</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">rfile_path</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot; rfile can be either a string specifying the path to a rate file or</span>
 <span class="sd">        an io.StringIO object from which to read rate information. &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">rfile_path</span> <span class="o">=</span> <span class="n">rfile_path</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rfile</span> <span class="o">=</span> <span class="kc">None</span>
@@ -1416,13 +1427,8 @@
 
         <span class="bp">self</span><span class="o">.</span><span class="n">fname</span> <span class="o">=</span> <span class="kc">None</span>
 
-        <span class="bp">self</span><span class="o">.</span><span class="n">reactants</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">products</span> <span class="o">=</span> <span class="p">[]</span>
-
         <span class="bp">self</span><span class="o">.</span><span class="n">label</span> <span class="o">=</span> <span class="s2">&quot;tabular&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">tabular</span> <span class="o">=</span> <span class="kc">True</span>
-
-        <span class="bp">self</span><span class="o">.</span><span class="n">Q</span> <span class="o">=</span> <span class="kc">None</span>
 
         <span class="c1"># we should initialize this somehow</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">weak_type</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -1471,7 +1477,8 @@
 
         <span class="c1"># first line is the chapter</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">chapter</span> <span class="o">=</span> <span class="n">lines</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
-        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">chapter</span> <span class="o">==</span> <span class="s2">&quot;t&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">chapter</span> <span class="o">!=</span> <span class="s2">&quot;t&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">RateFileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid chapter for TabularRate (</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">chapter</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
 
         <span class="c1"># remove any blank lines</span>
         <span class="n">set_lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">l</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="n">lines</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span> <span class="k">if</span> <span class="ow">not</span> <span class="n">l</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">]</span>
@@ -1486,8 +1493,8 @@
         <span class="k">try</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">reactants</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Nucleus</span><span class="o">.</span><span class="n">from_cache</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">products</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Nucleus</span><span class="o">.</span><span class="n">from_cache</span><span class="p">(</span><span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Nucleus objects could not be identified in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">original_source</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span>
+        <span class="k">except</span> <span class="n">UnsupportedNucleus</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">RateFileError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Nucleus objects could not be identified in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">original_source</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">table_file</span> <span class="o">=</span> <span class="n">s2</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">table_header_lines</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">s3</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
@@ -1669,13 +1676,14 @@
 <span class="sd">    by the application of detailed balance to the forward reactions.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span>  <span class="n">compute_Q</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_pf</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">compute_Q</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_pf</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">use_pf</span> <span class="o">=</span> <span class="n">use_pf</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">rate</span> <span class="o">=</span> <span class="n">rate</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">compute_Q</span> <span class="o">=</span> <span class="n">compute_Q</span>
 
-        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rate</span><span class="p">,</span> <span class="n">Rate</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">rate</span><span class="p">,</span> <span class="n">Rate</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">&#39;rate must be a Rate subclass&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">rate</span><span class="p">,</span> <span class="n">TabularRate</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">rate</span><span class="o">.</span><span class="n">weak</span> <span class="ow">or</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">rate</span><span class="o">.</span><span class="n">reverse</span><span class="p">):</span>
@@ -2145,7 +2153,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, pynucastro development team.</p>
+    <p>&#169; Copyright 2023, pynucastro development team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a

@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pynucastro.networks.rate_collection &mdash; pynucastro 1.6.0.post263+gbba2630 documentation</title>
+  <title>pynucastro.networks.rate_collection &mdash; pynucastro 1.6.0.post270+g5c95f2c documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
@@ -11,10 +11,9 @@
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/underscore.js"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
         <script src="../../../_static/doctools.js"></script>
         <script src="../../../_static/sphinx_highlight.js"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
@@ -138,7 +137,7 @@
 <span class="c1"># Import Rate</span>
 <span class="kn">from</span> <span class="nn">pynucastro.nucdata</span> <span class="kn">import</span> <span class="n">Nucleus</span><span class="p">,</span> <span class="n">PeriodicTable</span>
 <span class="kn">from</span> <span class="nn">pynucastro.rates</span> <span class="kn">import</span> <span class="p">(</span><span class="n">ApproximateRate</span><span class="p">,</span> <span class="n">DerivedRate</span><span class="p">,</span> <span class="n">Library</span><span class="p">,</span> <span class="n">Rate</span><span class="p">,</span>
-                              <span class="n">RatePair</span><span class="p">,</span> <span class="n">TabularRate</span><span class="p">,</span> <span class="n">load_rate</span><span class="p">)</span>
+                              <span class="n">RateFileError</span><span class="p">,</span> <span class="n">RatePair</span><span class="p">,</span> <span class="n">TabularRate</span><span class="p">,</span> <span class="n">load_rate</span><span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pynucastro.rates.library</span> <span class="kn">import</span> <span class="n">_rate_name_to_nuc</span>
 <span class="kn">from</span> <span class="nn">pynucastro.screening</span> <span class="kn">import</span> <span class="n">make_plasma_state</span><span class="p">,</span> <span class="n">make_screen_factors</span>
 <span class="kn">from</span> <span class="nn">pynucastro.screening.screen</span> <span class="kn">import</span> <span class="n">NseState</span>
@@ -412,6 +411,7 @@
 
 <div class="viewcode-block" id="RateCollection"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.rate_collection.RateCollection">[docs]</a><span class="k">class</span> <span class="nc">RateCollection</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot; a collection of rates that together define a network &quot;&quot;&quot;</span>
+    <span class="c1"># pylint: disable=too-many-public-methods</span>
 
     <span class="n">pynucastro_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">realpath</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)))</span>
 
@@ -569,6 +569,7 @@
                             <span class="n">cr</span><span class="o">.</span><span class="n">removed</span> <span class="o">=</span> <span class="kc">False</span>
 
                         <span class="n">cr</span><span class="o">.</span><span class="n">fname</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="c1"># pylint: disable-next=protected-access</span>
                         <span class="n">cr</span><span class="o">.</span><span class="n">_set_print_representation</span><span class="p">()</span>
 
                         <span class="k">if</span> <span class="n">cr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">derived_rates</span><span class="p">:</span>
@@ -581,6 +582,7 @@
                             <span class="n">cr</span><span class="o">.</span><span class="n">removed</span> <span class="o">=</span> <span class="kc">False</span>
 
                         <span class="n">cr</span><span class="o">.</span><span class="n">fname</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="c1"># pylint: disable-next=protected-access</span>
                         <span class="n">cr</span><span class="o">.</span><span class="n">_set_print_representation</span><span class="p">()</span>
 
                         <span class="k">if</span> <span class="n">cr</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">reaclib_rates</span><span class="p">:</span>
@@ -606,8 +608,8 @@
             <span class="c1"># create the appropriate rate object first</span>
             <span class="k">try</span><span class="p">:</span>
                 <span class="n">rate</span> <span class="o">=</span> <span class="n">load_rate</span><span class="p">(</span><span class="n">rf</span><span class="p">)</span>
-            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error reading rate from file: </span><span class="si">{</span><span class="n">rf</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span>
+            <span class="k">except</span> <span class="n">RateFileError</span> <span class="k">as</span> <span class="n">ex</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">RateFileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Error reading rate from file: </span><span class="si">{</span><span class="n">rf</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span> <span class="kn">from</span> <span class="nn">ex</span>
 
             <span class="c1"># now create a library:</span>
             <span class="n">rflib</span> <span class="o">=</span> <span class="n">Library</span><span class="p">(</span><span class="n">rates</span><span class="o">=</span><span class="p">[</span><span class="n">rate</span><span class="p">])</span>
@@ -680,10 +682,9 @@
 
         <span class="c1"># we might have some reverse rates remaining for which there</span>
         <span class="c1"># were no forward rates -- add those now</span>
-        <span class="k">if</span> <span class="n">reverse_rates</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">rr</span> <span class="ow">in</span> <span class="n">reverse_rates</span><span class="p">:</span>
-                <span class="n">rp</span> <span class="o">=</span> <span class="n">RatePair</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="n">rr</span><span class="p">)</span>
-                <span class="n">rate_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rp</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">rr</span> <span class="ow">in</span> <span class="n">reverse_rates</span><span class="p">:</span>
+            <span class="n">rp</span> <span class="o">=</span> <span class="n">RatePair</span><span class="p">(</span><span class="n">reverse</span><span class="o">=</span><span class="n">rr</span><span class="p">)</span>
+            <span class="n">rate_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">rp</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">rate_pairs</span></div>
 
@@ -725,17 +726,14 @@
         <span class="k">return</span> <span class="n">_r</span></div>
 
 <div class="viewcode-block" id="RateCollection.get_nuclei_needing_partition_functions"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.rate_collection.RateCollection.get_nuclei_needing_partition_functions">[docs]</a>    <span class="k">def</span> <span class="nf">get_nuclei_needing_partition_functions</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-<span class="w">        </span><span class="sd">&quot;&quot;&quot;return a list of the nuclei that require partition</span>
-<span class="sd">        functions for one or more DerivedRates in the collection&quot;&quot;&quot;</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;return a set of Nuclei that require partition functions for one or</span>
+<span class="sd">        more DerivedRates in the collection&quot;&quot;&quot;</span>
 
-        <span class="n">rates_with_pfs</span> <span class="o">=</span> <span class="p">[</span><span class="n">q</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_rates</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">DerivedRate</span><span class="p">)</span> <span class="ow">and</span> <span class="n">q</span><span class="o">.</span><span class="n">use_pf</span><span class="p">]</span>
-
-        <span class="k">if</span> <span class="n">rates_with_pfs</span><span class="p">:</span>
-            <span class="n">nuclei_pfs</span> <span class="o">=</span> <span class="p">[]</span>
-            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">rates_with_pfs</span><span class="p">:</span>
-                <span class="n">nuclei_pfs</span> <span class="o">+=</span> <span class="n">r</span><span class="o">.</span><span class="n">reactants</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="n">products</span>
-            <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">nuclei_pfs</span><span class="p">)</span>
-        <span class="k">return</span> <span class="kc">None</span></div>
+        <span class="n">nuclei_pfs</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">all_rates</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">DerivedRate</span><span class="p">)</span> <span class="ow">and</span> <span class="n">r</span><span class="o">.</span><span class="n">use_pf</span><span class="p">:</span>
+                <span class="n">nuclei_pfs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">reactants</span> <span class="o">+</span> <span class="n">r</span><span class="o">.</span><span class="n">products</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">nuclei_pfs</span></div>
 
 <div class="viewcode-block" id="RateCollection.remove_nuclei"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.rate_collection.RateCollection.remove_nuclei">[docs]</a>    <span class="k">def</span> <span class="nf">remove_nuclei</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nuc_list</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;remove the nuclei in nuc_list from the network along with any rates</span>
@@ -788,7 +786,7 @@
 
         <span class="c1"># make sure that the intermediate_nuclei list are Nuclei objects</span>
         <span class="n">_inter_nuclei_remove</span> <span class="o">=</span> <span class="p">[]</span>
-        <span class="k">if</span> <span class="n">intermediate_nuclei</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">intermediate_nuclei</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">nn</span> <span class="ow">in</span> <span class="n">intermediate_nuclei</span><span class="p">:</span>
                 <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">nn</span><span class="p">,</span> <span class="n">Nucleus</span><span class="p">):</span>
                     <span class="n">_inter_nuclei_remove</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">nn</span><span class="p">)</span>
@@ -1191,12 +1189,12 @@
         <span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">,</span> <span class="n">category</span><span class="o">=</span><span class="ne">RuntimeWarning</span><span class="p">)</span>
 
         <span class="c1"># This nested loops should fine-tune the initial guess if fsolve is unable to find a solution</span>
-        <span class="k">while</span> <span class="p">(</span><span class="n">j</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">):</span>
+        <span class="k">while</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">:</span>
             <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
             <span class="n">guess</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">init_guess</span><span class="p">)</span>
             <span class="n">init_dx</span> <span class="o">=</span> <span class="mf">0.5</span>
 
-            <span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">):</span>
+            <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">20</span><span class="p">:</span>
                 <span class="n">u</span> <span class="o">=</span> <span class="n">fsolve</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_constraint_eq</span><span class="p">,</span> <span class="n">guess</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="p">(</span><span class="n">u_c</span><span class="p">,</span> <span class="n">state</span><span class="p">),</span> <span class="n">xtol</span><span class="o">=</span><span class="n">tol</span><span class="p">,</span> <span class="n">maxfev</span><span class="o">=</span><span class="mi">800</span><span class="p">)</span>
                 <span class="n">Xs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nucleon_fraction_nse</span><span class="p">(</span><span class="n">u</span><span class="p">,</span> <span class="n">u_c</span><span class="p">,</span> <span class="n">state</span><span class="p">)</span>
                 <span class="n">n_e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_evaluate_n_e</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">Xs</span><span class="p">)</span>
@@ -2282,7 +2280,7 @@
   <hr/>
 
   <div role="contentinfo">
-    <p>&#169; Copyright 2022, pynucastro development team.</p>
+    <p>&#169; Copyright 2023, pynucastro development team.</p>
   </div>
 
   Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
