@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Creating Networks &mdash; pynucastro 1.6.0.post270+g5c95f2c documentation</title>
+  <title>Creating Networks &mdash; pynucastro 1.6.0.post318+g4222442 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
@@ -25,7 +25,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="C++ Networks" href="cxx-networks.html" />
-    <link rel="prev" title="Nuclear Statistical Equilibrium" href="NSE-example.html" /> 
+    <link rel="prev" title="Example of Integrating a Network" href="Example-Integrating-Network-diffeqpy.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -77,6 +77,7 @@
 <li class="toctree-l1"><a class="reference internal" href="unimportant-rates.html">Removing Unimportant Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="partition-function.html">Reverse Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="NSE-example.html">Nuclear Statistical Equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="julia.html">Integrating using DifferentialEquations.jl</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Writing Networks</span></p>
 <ul class="current">
@@ -144,7 +145,7 @@ doing:</p>
 e.g. <code class="docutils literal notranslate"><span class="pre">mynet.py</span></code>, based on the following example scripts:</p>
 <ul class="simple">
 <li><p>For Python networks, <a class="reference external" href="https://github.com/pynucastro/pynucastro/blob/main/examples/CNO/cno.py">examples/CNO/cno.py</a></p></li>
-<li><p>For AMReX-Astro Microphysics networks, <a class="reference external" href="https://github.com/pynucastro/pynucastro/blob/main/examples/urca-23_starkiller/urca.py">examples/urca-23_starkiller/urca.py</a></p></li>
+<li><p>For AMReX-Astro Microphysics networks, <a class="reference external" href="https://github.com/pynucastro/pynucastro/blob/main/examples/triple-alpha/triple-alpha-cxx.py">examples/triple-alpha/triple-alpha-cxx.py</a></p></li>
 </ul>
 </li>
 <li><p>Run your python script</p>
@@ -163,9 +164,10 @@ right hand side module you generated above.</p>
 </section>
 <section id="amrex-astro-microphysics-network">
 <h2>AMReX-Astro Microphysics network<a class="headerlink" href="#amrex-astro-microphysics-network" title="Permalink to this heading"></a></h2>
-<p>The <a class="reference external" href="https://github.com/pynucastro/pynucastro/tree/main/examples/urca-23_starkiller">examples/urca-23_starkiller</a> example builds the right hand side, Jacobian,
-and helper C++ modules to copy into the <code class="docutils literal notranslate"><span class="pre">networks/</span></code> subdirectory
-of the AMReX-Astro Microphysics repository.</p>
+<p>The <a class="reference external" href="https://github.com/pynucastro/pynucastro/blob/main/examples/triple-alpha/triple-alpha-cxx.py">examples/triple-alpha/triple-alpha-cxx.py</a>
+example builds the right hand side, Jacobian, and helper C++ modules
+to copy into the <code class="docutils literal notranslate"><span class="pre">networks/</span></code> subdirectory of the AMReX-Astro
+Microphysics repository.</p>
 <p>No additional customization is required after running the steps for
 all networks above.</p>
 </section>
@@ -174,14 +176,14 @@ all networks above.</p>
 <p>Tabular rates for reactions of the form <span class="math notranslate nohighlight">\(\rm{A \rightarrow B}\)</span>
 are supported by the AMReX-Astro Microphysics network outputs.</p>
 <p>If you would like to include tabular rates, for now they must be in
-the form of, e.g. <a class="reference external" href="https://github.com/pynucastro/pynucastro/blob/main/pynucastro/library/tabular/23Na-23Ne_electroncapture.dat">23Na-23Ne_electroncapture.dat</a> in
-<code class="docutils literal notranslate"><span class="pre">pynucastro/library/tabular/</span></code>, indexed by the product of density and
+the form of, e.g. <a class="reference external" href="https://github.com/pynucastro/pynucastro/blob/main/pynucastro/library/tabular/suzuki/23Na-23Ne_electroncapture.dat">23Na-23Ne_electroncapture.dat</a> in
+<code class="docutils literal notranslate"><span class="pre">pynucastro/library/tabular/suzuki</span></code>, indexed by the product of density and
 electron fraction <span class="math notranslate nohighlight">\(\rm{\rho Y_e}\)</span> and temperature
 <span class="math notranslate nohighlight">\(\rm{T}\)</span>, with the same number and order of variables.</p>
 <p>To generate a network with a tabular rate, prepare a rate file to
 describe how to read the table as below and then list it as you would
 a Reaclib rate file in your network generation script. For example,
-<a class="reference external" href="https://github.com/pynucastro/pynucastro/blob/main/pynucastro/library/tabular/na23--ne23-toki">pynucastro/library/tabular/na23–ne23-toki</a> demonstrates the following
+<a class="reference external" href="https://github.com/pynucastro/pynucastro/blob/main/pynucastro/library/tabular/suzuki/na23--ne23-toki">pynucastro/library/tabular/suzuki/na23–ne23-toki</a> demonstrates the following
 format:</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span>t
 [parent nuclide]  [daughter nuclide]
@@ -198,7 +200,7 @@ format:</p>
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="NSE-example.html" class="btn btn-neutral float-left" title="Nuclear Statistical Equilibrium" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Example-Integrating-Network-diffeqpy.html" class="btn btn-neutral float-left" title="Example of Integrating a Network" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="cxx-networks.html" class="btn btn-neutral float-right" title="C++ Networks" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

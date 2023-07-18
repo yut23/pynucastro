@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Overview of pynucastro &mdash; pynucastro 1.6.0.post270+g5c95f2c documentation</title>
+  <title>Overview of pynucastro &mdash; pynucastro 1.6.0.post318+g4222442 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
@@ -81,6 +81,7 @@
 <li class="toctree-l1"><a class="reference internal" href="unimportant-rates.html">Removing Unimportant Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="partition-function.html">Reverse Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="NSE-example.html">Nuclear Statistical Equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="julia.html">Integrating using DifferentialEquations.jl</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Writing Networks</span></p>
 <ul>
@@ -130,7 +131,7 @@ codes.</p>
 </div>
 <p>The main classes are:</p>
 <ul>
-<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">Nucleus</span></code>: This is a single
+<li><p><a class="reference internal" href="pynucastro.nucdata.html#pynucastro.nucdata.nucleus.Nucleus" title="pynucastro.nucdata.nucleus.Nucleus"><code class="xref py py-func docutils literal notranslate"><span class="pre">Nucleus</span></code></a>: This is a single
 nucleus.  It knows its proton number, <code class="docutils literal notranslate"><span class="pre">Z</span></code>, neutron number, <code class="docutils literal notranslate"><span class="pre">N</span></code>,
 weight, <code class="docutils literal notranslate"><span class="pre">A</span></code>, and binding energy, <code class="docutils literal notranslate"><span class="pre">nucbind</span></code>, as well as
 T-dependent partition function and ground state spin.</p></li>
@@ -204,7 +205,7 @@ A reaction network takes the form:</p>
 \[\frac{dY_i}{dt} = - \sum_{j,k} Y_i Y_j \lambda_{i(j,k)l} + \sum_{j,k} Y_l Y_k \lambda_{l(j,k)i}\]</div>
 <p>where the <span class="math notranslate nohighlight">\(\lambda\)</span>’s are the rates of destruction and creation
 of species i, represented by the molar fraction <span class="math notranslate nohighlight">\(Y_i\)</span> (see,
-e.g., <a class="reference external" href="http://adsabs.harvard.edu/abs/1999ApJS..124..241T">Timmes 1999</a>).  pynucastro
+e.g., <a class="reference external" href="https://ui.adsabs.harvard.edu/abs/1999ApJS..124..241T">Timmes 1999</a>).  pynucastro
 will create the righthand sides of this system of ODEs (as python or
 C++ code) from the list of rates you provide. One can use this to
 add reaction networks to existing simulation codes, for example, the
