@@ -244,7 +244,7 @@ get_entries(const table_t& table_meta,
 
     if ((itemp_lo - 1 < 1) || (itemp_hi + 1 > table_meta.ntemp)) {
         // We're at the first or last table cell (in temperature)
-        // First do bilinear interpolation in rhoy for the table at tlo and thi
+        // First do linear interpolation in rhoy for the table at tlo and thi
 
         Real f_i = bl_clamp(log_rhoy_lo, log_rhoy_hi,
                             data(itemp_lo, irhoy_lo, jtab_rate),
