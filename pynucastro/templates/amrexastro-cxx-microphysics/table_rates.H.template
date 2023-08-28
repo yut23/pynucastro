@@ -42,13 +42,13 @@ struct table_t
     int nheader;
 };
 
-// we add a 7th quantity dr/dT
-// k_drate_dt is used only for calculating the derivative
+// we add a 7th quantity dr/dlog(T)
+// k_drate_dlogt is used only for calculating the derivative
 // of rate with temperature from the table, it isn't an index
 // into the table but into the 'entries' array in, eg. get_entries.
 
-const int k_drate_dt   = 7;
-const int add_vars     = 1;  // 1 Additional Var in entries
+const int k_drate_dlogt = 7;
+const int add_vars      = 1;  // 1 Additional Var in entries
 
 
 namespace rate_tables
@@ -182,9 +182,10 @@ get_entries(const table_t& table_meta,
     const Real log_rhoy = std::log10(rhoy);
     const Real log_temp = std::log10(temp);
 
-    // The last element of entries is the derivative of rate with temperature
-    // drate_dt, evaluated by central differencing at the box corners
-    // and then performing a bilinear interpolation on those central differences.
+    // The last element of entries is the derivative of rate with the log of
+    // temperature drate_dlogt, evaluated by central differencing at the box
+    // corners and then performing a bilinear interpolation on those central
+    // differences.
 
 
     // Get box-corner points for interpolation
@@ -230,7 +231,7 @@ get_entries(const table_t& table_meta,
         entries(ivar) = bl_extrap(log_rhoy_lo, log_rhoy_hi, f_i, f_ip1, log_rhoy);
     }
 
-    // Calculate the derivative of rate with temperature, d(rate)/d(t)
+    // Calculate the derivative of rate with log temperature, d(rate)/d(log T)
     // (Clamp interpolations in rhoy to avoid unphysical temperature derivatives)
 
     if ((itemp_lo - 1 < 1) || (itemp_hi + 1 > table_meta.ntemp)) {
@@ -247,12 +248,12 @@ get_entries(const table_t& table_meta,
                               data(itemp_hi, irhoy_hi, jtab_rate),
                               log_rhoy);
 
-        // Approximate d(rate)/d(t) via forward differencing
+        // Approximate d(rate)/d(log T) via forward differencing
 
-        entries(k_drate_dt) = (f_ip1 - f_i) / (log_temp_hi - log_temp_lo);
+        entries(k_drate_dlogt) = (f_ip1 - f_i) / (log_temp_hi - log_temp_lo);
 
     } else {
-        // Approximate d(rate)/d(t) via bilinear interpolation on central differences
+        // Approximate d(rate)/d(log T) via bilinear interpolation on central differences
 
         Real t_im1 = log_temp_table(itemp_lo-1);
         Real t_i   = log_temp_table(itemp_lo);
@@ -281,13 +282,15 @@ get_entries(const table_t& table_meta,
 
         // Get central difference derivatives at the box corners
 
-        Real drdt_i   = (f_ip1 - f_im1) / (t_ip1 - t_im1);
-        Real drdt_ip1 = (f_ip2 - f_i)   / (t_ip2 - t_i);
+        Real drdlogt_i   = (f_ip1 - f_im1) / (t_ip1 - t_im1);
+        Real drdlogt_ip1 = (f_ip2 - f_i)   / (t_ip2 - t_i);
 
         // Interpolate in temperature
         // (Since we're inside the table in temp, use bl_extrap, it's faster)
 
-        entries(k_drate_dt) = bl_extrap(t_i, t_ip1, drdt_i, drdt_ip1, log_temp);
+        entries(k_drate_dlogt) = bl_extrap(t_i, t_ip1,
+                                           drdlogt_i, drdlogt_ip1,
+                                           log_temp);
 
     }
 }
@@ -314,7 +317,7 @@ tabular_evaluate(const table_t& table_meta,
     // (negative) neutrino loss contribution to energy generation
 
     rate       = std::pow(10.0_rt, entries(jtab_rate));
-    drate_dt   = rate * entries(k_drate_dt) / temp;
+    drate_dt   = rate * entries(k_drate_dlogt) / temp;
     edot_nu    = -std::pow(10.0_rt, entries(jtab_nuloss));
     edot_gamma = std::pow(10.0_rt, entries(jtab_gamma));
 }
