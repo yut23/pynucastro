@@ -18,18 +18,46 @@ authors = [
 dynamic = ["version"]
 
 dependencies = [
-  "networkx",
-  "numpy",
-  "sympy",
-  "scipy",
-  "matplotlib",
-  "ipywidgets",
+  "ipywidgets>=7.1.2",
+  "matplotlib>=2.1.0",
+  "networkx>=2.1",
+  "numpy>=1.13.3,<2.0",
+  "scipy>=1.0.0",
+  "sympy>=1.1.1",
 ]
-optional-dependencies.numba = ["numba"]
 
 [project.urls]
 Homepage = "https://github.com/pynucastro/pynucastro"
 Documentation = "https://pynucastro.github.io/pynucastro/"
+
+[project.optional-dependencies]
+numba = ["numba>=0.52"]
+# for running the unit tests
+test = [
+  "pynucastro[numba]",
+  "nbval>=0.9.0",
+  "pytest-cov>=2.6.0",
+  "pytest>=3.6",
+]
+# for building the docs
+docs = [
+  "pynucastro[numba]",
+  "ipykernel",
+  "jinja2==3.0.3",
+  "nbsphinx>=0.3.1",
+  "Sphinx",
+  "sphinx-copybutton",
+  "sphinx-mdinclude",
+  "sphinx-prompt",
+  "sphinx_rtd_theme>=1.1.0",
+]
+# for working on the code, plus everything above
+dev = [
+  "pynucastro[test,docs]",
+  "flake8",
+  "isort",
+  "pylint",
+]
 
 
 # packaging
