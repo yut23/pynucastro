@@ -3,19 +3,22 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pynucastro.networks.python_network &mdash; pynucastro 1.6.0.post318+g4222442 documentation</title>
+  <title>pynucastro.networks.python_network &mdash; pynucastro 1.6.0.post381+g83ebfb7 documentation</title>
       <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
       <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../../../_static/jquery.js"></script>
-        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
-        <script src="../../../_static/doctools.js"></script>
-        <script src="../../../_static/sphinx_highlight.js"></script>
+        <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="../../../_static/documentation_options.js?v=706b9a27"></script>
+        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
+        <script src="../../../_static/copybutton.js?v=f281be69"></script>
         <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script src="../../../_static/js/theme.js"></script>
@@ -62,6 +65,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../library-examples.html">Selecting Rates from a Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../validate-example.html">Checking your network</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../electron-capture-example.html">Tabulated Weak Rate Example</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../electron-captures.html">Combining ReacLib Rates with Electron Capture Tables</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Advanced Usage</span></p>
@@ -69,6 +73,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../screening-examples.html">Screening Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modify-example.html">Modifying Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../approx-rates-examples.html">Approximate Rates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../custom-rates.html">Creating a Custom Rate</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../unimportant-rates.html">Removing Unimportant Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../partition-function.html">Reverse Rates</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../NSE-example.html">Nuclear Statistical Equilibrium</a></li>
@@ -77,7 +82,7 @@
 <p class="caption" role="heading"><span class="caption-text">Writing Networks</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../networks.html">Creating Networks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../cxx-networks.html">C++ Networks</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cxx-networks.html">AMReX Astro Microphysics Networks</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Reference</span></p>
 <ul>
@@ -114,16 +119,22 @@
 <span></span><span class="sd">&quot;&quot;&quot;Support modules to write a pure python reaction network ODE</span>
 <span class="sd">source&quot;&quot;&quot;</span>
 
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 
 <span class="kn">from</span> <span class="nn">pynucastro.networks.rate_collection</span> <span class="kn">import</span> <span class="n">RateCollection</span>
 <span class="kn">from</span> <span class="nn">pynucastro.rates.rate</span> <span class="kn">import</span> <span class="n">ApproximateRate</span>
 
 
-<div class="viewcode-block" id="PythonNetwork"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.python_network.PythonNetwork">[docs]</a><span class="k">class</span> <span class="nc">PythonNetwork</span><span class="p">(</span><span class="n">RateCollection</span><span class="p">):</span>
+<div class="viewcode-block" id="PythonNetwork">
+<a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.python_network.PythonNetwork">[docs]</a>
+<span class="k">class</span> <span class="nc">PythonNetwork</span><span class="p">(</span><span class="n">RateCollection</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;A pure python reaction network.&quot;&quot;&quot;</span>
 
-<div class="viewcode-block" id="PythonNetwork.full_ydot_string"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.python_network.PythonNetwork.full_ydot_string">[docs]</a>    <span class="k">def</span> <span class="nf">full_ydot_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nucleus</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="PythonNetwork.full_ydot_string">
+<a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.python_network.PythonNetwork.full_ydot_string">[docs]</a>
+    <span class="k">def</span> <span class="nf">full_ydot_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nucleus</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;construct the python form of dY(nucleus)/dt&quot;&quot;&quot;</span>
 
         <span class="n">ostr</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
@@ -148,7 +159,10 @@
 
         <span class="k">return</span> <span class="n">ostr</span></div>
 
-<div class="viewcode-block" id="PythonNetwork.full_jacobian_element_string"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.python_network.PythonNetwork.full_jacobian_element_string">[docs]</a>    <span class="k">def</span> <span class="nf">full_jacobian_element_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ydot_i_nucleus</span><span class="p">,</span> <span class="n">y_j_nucleus</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="PythonNetwork.full_jacobian_element_string">
+<a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.python_network.PythonNetwork.full_jacobian_element_string">[docs]</a>
+    <span class="k">def</span> <span class="nf">full_jacobian_element_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ydot_i_nucleus</span><span class="p">,</span> <span class="n">y_j_nucleus</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;return the Jacobian element dYdot(ydot_i_nucleus)/dY(y_j_nucleus)&quot;&quot;&quot;</span>
 
         <span class="c1"># this is the jac(i,j) string</span>
@@ -193,7 +207,10 @@
 
         <span class="k">return</span> <span class="n">ostr</span></div>
 
-<div class="viewcode-block" id="PythonNetwork.screening_string"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.python_network.PythonNetwork.screening_string">[docs]</a>    <span class="k">def</span> <span class="nf">screening_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="PythonNetwork.screening_string">
+<a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.python_network.PythonNetwork.screening_string">[docs]</a>
+    <span class="k">def</span> <span class="nf">screening_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
         <span class="n">ostr</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="n">ostr</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s2">plasma_state = PlasmaState(T, rho, Y, Z)</span><span class="se">\n</span><span class="s2">&quot;</span>
 
@@ -231,7 +248,10 @@
 
         <span class="k">return</span> <span class="n">ostr</span></div>
 
-<div class="viewcode-block" id="PythonNetwork.rates_string"><a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.python_network.PythonNetwork.rates_string">[docs]</a>    <span class="k">def</span> <span class="nf">rates_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+
+<div class="viewcode-block" id="PythonNetwork.rates_string">
+<a class="viewcode-back" href="../../../pynucastro.networks.html#pynucastro.networks.python_network.PythonNetwork.rates_string">[docs]</a>
+    <span class="k">def</span> <span class="nf">rates_string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;section for evaluating the rates and storing them in rate_eval&quot;&quot;&quot;</span>
         <span class="n">ostr</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
         <span class="n">ostr</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s2"># reaclib rates</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -248,6 +268,11 @@
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabular_rates</span><span class="p">:</span>
             <span class="n">ostr</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">r</span><span class="o">.</span><span class="n">fname</span><span class="si">}</span><span class="s2">(rate_eval, T, rho*ye(Y))</span><span class="se">\n</span><span class="s2">&quot;</span>
 
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_rates</span><span class="p">:</span>
+            <span class="n">ostr</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s2"># custom rates</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">custom_rates</span><span class="p">:</span>
+            <span class="n">ostr</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">r</span><span class="o">.</span><span class="n">fname</span><span class="si">}</span><span class="s2">(rate_eval, tf)</span><span class="se">\n</span><span class="s2">&quot;</span>
+
         <span class="n">ostr</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span>
 
         <span class="c1"># apply screening factors, if we&#39;re given a screening function</span>
@@ -260,6 +285,7 @@
             <span class="n">ostr</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}{</span><span class="n">r</span><span class="o">.</span><span class="n">fname</span><span class="si">}</span><span class="s2">(rate_eval, tf)</span><span class="se">\n</span><span class="s2">&quot;</span>
 
         <span class="k">return</span> <span class="n">ostr</span></div>
+
 
     <span class="k">def</span> <span class="nf">_write_network</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">outfile</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
@@ -277,7 +303,7 @@
         <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;import numba</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;import numpy as np</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;from numba.experimental import jitclass</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;from pynucastro.rates import Tfactors, _find_rate_file</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;from pynucastro.rates import TableIndex, TableInterpolator, TabularRate, Tfactors</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
         <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;from pynucastro.screening import PlasmaState, ScreenFactors</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># integer keys</span>
@@ -321,10 +347,9 @@
         <span class="n">nuclei_pfs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_nuclei_needing_partition_functions</span><span class="p">()</span>
 
         <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="n">nuclei_pfs</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">n</span><span class="o">.</span><span class="n">partition_function</span><span class="p">:</span>
-                <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">_temp_array = np.array(</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">partition_function</span><span class="o">.</span><span class="n">temperature</span><span class="o">/</span><span class="mf">1.0e9</span><span class="p">)</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">_pf_array = np.array(</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">partition_function</span><span class="o">.</span><span class="n">partition_function</span><span class="p">)</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-                <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">_temp_array = np.array(</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">partition_function</span><span class="o">.</span><span class="n">temperature</span><span class="o">/</span><span class="mf">1.0e9</span><span class="p">)</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">}</span><span class="s2">_pf_array = np.array(</span><span class="si">{</span><span class="nb">list</span><span class="p">(</span><span class="n">n</span><span class="o">.</span><span class="n">partition_function</span><span class="o">.</span><span class="n">partition_function</span><span class="p">)</span><span class="si">}</span><span class="s2">)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># rate_eval class</span>
 
@@ -340,20 +365,16 @@
         <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># tabular rate data</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabular_rates</span><span class="p">:</span>
+            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;# note: we cannot make the TableInterpolator global, since numba doesn&#39;t like global jitclass</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
         <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabular_rates</span><span class="p">:</span>
 
             <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;# load data for </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">rid</span><span class="si">}</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">fname</span><span class="si">}</span><span class="s2">_table_path = _find_rate_file(&#39;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">table_file</span><span class="si">}</span><span class="s2">&#39;)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;t_data2d = []</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;with open(</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">fname</span><span class="si">}</span><span class="s2">_table_path) as tabular_file:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s1">&#39;</span><span class="s2">&quot;for i, line in enumerate(tabular_file):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">indent</span><span class="o">*</span><span class="mi">2</span><span class="si">}</span><span class="s1">&#39;</span><span class="sa">f</span><span class="s2">&quot;if i &lt; </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">table_header_lines</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">indent</span><span class="o">*</span><span class="mi">3</span><span class="si">}</span><span class="s1">&#39;</span><span class="s2">&quot;continue</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">indent</span><span class="o">*</span><span class="mi">2</span><span class="si">}</span><span class="s1">&#39;</span><span class="s2">&quot;line = line.strip()</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">indent</span><span class="o">*</span><span class="mi">2</span><span class="si">}</span><span class="s1">&#39;</span><span class="s2">&quot;if not line:</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">indent</span><span class="o">*</span><span class="mi">3</span><span class="si">}</span><span class="s1">&#39;</span><span class="s2">&quot;continue</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">indent</span><span class="o">*</span><span class="mi">2</span><span class="si">}</span><span class="s1">&#39;</span><span class="s2">&quot;t_data2d.append(line.split())</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">fname</span><span class="si">}</span><span class="s2">_data = np.array(t_data2d, dtype=float)</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">fname</span><span class="si">}</span><span class="s2">_rate = TabularRate(rfile=&#39;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">rfile</span><span class="si">}</span><span class="s2">&#39;)</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">fname</span><span class="si">}</span><span class="s2">_info = (</span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">fname</span><span class="si">}</span><span class="s2">_rate.table_rhoy_lines,</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;                  </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">fname</span><span class="si">}</span><span class="s2">_rate.table_temp_lines,</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;                  </span><span class="si">{</span><span class="n">r</span><span class="o">.</span><span class="n">fname</span><span class="si">}</span><span class="s2">_rate.tabular_data_table)</span><span class="se">\n\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;@numba.njit()</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
@@ -428,7 +449,29 @@
             <span class="k">for</span> <span class="n">n_j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">unique_nuclei</span><span class="p">:</span>
                 <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">full_jacobian_element_string</span><span class="p">(</span><span class="n">n_i</span><span class="p">,</span> <span class="n">n_j</span><span class="p">,</span> <span class="n">indent</span><span class="o">=</span><span class="n">indent</span><span class="p">))</span>
 
-        <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s2">return jac</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span></div>
+        <span class="n">of</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">indent</span><span class="si">}</span><span class="s2">return jac</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Copy any tables in the network to the current directory</span>
+        <span class="c1"># if the table file cannot be found, print a warning and continue.</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">odir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">outfile</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+            <span class="n">odir</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="k">for</span> <span class="n">tr</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">tabular_rates</span><span class="p">:</span>
+            <span class="n">tdir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">tr</span><span class="o">.</span><span class="n">rfile_path</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">tdir</span> <span class="o">!=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">():</span>
+                <span class="n">tdat_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tdir</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">table_file</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">tdat_file</span><span class="p">):</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">tdat_file</span><span class="p">,</span> <span class="n">odir</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;WARNING: Table data file </span><span class="si">{</span><span class="n">tr</span><span class="o">.</span><span class="n">table_file</span><span class="si">}</span><span class="s1"> not found.&#39;</span><span class="p">)</span>
+                <span class="n">rtoki_file</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tdir</span><span class="p">,</span> <span class="n">tr</span><span class="o">.</span><span class="n">rfile</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">rtoki_file</span><span class="p">):</span>
+                    <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">rtoki_file</span><span class="p">,</span> <span class="n">odir</span> <span class="ow">or</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">())</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;WARNING: Table metadata file </span><span class="si">{</span><span class="n">tr</span><span class="o">.</span><span class="n">rfile</span><span class="si">}</span><span class="s1"> not found.&#39;</span><span class="p">)</span></div>
+
 </pre></div>
 
            </div>
