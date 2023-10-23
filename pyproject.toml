@@ -1,6 +1,96 @@
 # pyproject.toml
 [build-system]
-requires = ["setuptools>=45", "wheel", "setuptools_scm>=6.2"]
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+
+# project metadata
+
+[project]
+name = "pynucastro"
+description = "A python library for nuclear astrophysics"
+readme = "README.md"
+license.text = "BSD"
+authors = [
+  {name="pynucastro development group"},
+  {email="michael.zingale@stonybrook.edu"},
+]
+dynamic = ["version"]
+
+dependencies = [
+  "ipywidgets>=7.1.2",
+  "matplotlib>=2.1.0",
+  "networkx>=2.1",
+  "numpy>=1.13.3,<2.0",
+  "scipy>=1.0.0",
+  "sympy>=1.1.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/pynucastro/pynucastro"
+Documentation = "https://pynucastro.github.io/pynucastro/"
+
+[project.optional-dependencies]
+numba = ["numba>=0.52"]
+# for running the unit tests
+test = [
+  "pynucastro[numba]",
+  "nbval>=0.9.0",
+  "pytest-cov>=2.6.0",
+  "pytest>=3.6",
+]
+# for building the docs
+docs = [
+  "pynucastro[numba]",
+  "ipykernel",
+  "jinja2==3.0.3",
+  "nbsphinx>=0.3.1",
+  "Sphinx",
+  "sphinx-copybutton",
+  "sphinx-mdinclude",
+  "sphinx-prompt",
+  "sphinx_rtd_theme>=1.1.0",
+]
+# for working on the code, plus everything above
+dev = [
+  "pynucastro[test,docs]",
+  "flake8",
+  "isort",
+  "pylint",
+]
+
+
+# packaging
+
+[tool.setuptools]
+zip-safe = false
+# we explicitly list the data we want below
+include-package-data = false
+
+[tool.setuptools.packages.find]
+include = ["pynucastro*"]
+exclude = ["*.tests*"]
+namespaces = false
+
+[tool.setuptools.package-data]
+# additional files to include when building a wheel
+pynucastro = [
+  "library/*",
+  "library/tabular/*",
+  "library/tabular/suzuki/*",
+  "library/tabular/langanke/*",
+  "templates/**/*",
+  "nucdata/*",
+  "nucdata/AtomicMassEvaluation/*",
+  "nucdata/PartitionFunction/*",
+]
+
+[tool.setuptools_scm]
+version_scheme = "post-release"
+version_file = "pynucastro/_version.py"
+
+
+# development tools
 
 [tool.pylint.MAIN]
 ignore = ['_python_reference', 'test_full_python_net.py']
@@ -47,12 +137,15 @@ min-similarity-lines = 10
 generated-members = ["viridis", "bwr"]
 # see https://github.com/PyCQA/pylint/issues/2289 for the generated-members
 
+
 [tool.codespell]
 skip = ".git,*docs/build,*.bib"
+
 
 [tool.isort]
 known_first_party = ["pynucastro"]
 skip = ["pynucastro/networks/tests/_python_reference/network.py"]
+
 
 [tool.pytest.ini_options]
 addopts = """\

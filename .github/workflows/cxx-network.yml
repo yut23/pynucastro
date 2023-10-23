@@ -13,23 +13,13 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.10'
+          cache: 'pip'
+          cache-dependency-path: 'pyproject.toml'
 
-      - name: Cache pip
-        uses: actions/cache@v3
-        with:
-          # this path is specific to Ubuntu
-          path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt') }}
-          restore-keys: |
-            ${{ runner.os }}-pip-
-
-      - name: Install dependencies
+      - name: Install pynucastro + dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt
-
-      - name: Install pynucastro
-        run: python setup.py develop --user
+          pip install .
 
       - name: Get AMReX
         run: |
@@ -51,7 +41,7 @@ jobs:
           git checkout development
           cd ../..
 
-      - name: Install dependencies
+      - name: Install build tools
         run: |
           sudo apt-get update -y -qq
           sudo apt-get -qq -y install curl cmake jq clang g++>=9.3.0
