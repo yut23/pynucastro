@@ -7,7 +7,6 @@
 #include <fundamental_constants.H>
 #include <network_properties.H>
 
-using namespace amrex;
 
 void actual_network_init();
 
