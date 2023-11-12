@@ -20,7 +20,7 @@ codes.
    :caption: Introduction
 
    intro
-   data_sources
+   rate_types
    install
 
 .. toctree::
@@ -42,7 +42,7 @@ codes.
 
 .. toctree::
    :maxdepth: 1
-   :caption: Advanced Usage
+   :caption: Advanced Rate Operations
 
    screening-examples
    modify-example.ipynb
@@ -50,15 +50,32 @@ codes.
    custom-rates.ipynb
    unimportant-rates.ipynb
    partition-function
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Nuclear Statistical Equilibrium
+
    NSE-example.ipynb
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Plasma Neutrinos
+
+   neutrino-cooling.ipynb
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Writing and Integrating Networks
+
+   networks
+   cxx-networks
    julia
 
 .. toctree::
    :maxdepth: 1
-   :caption: Writing Networks
+   :caption: Interfacing With Other Languages
 
-   networks
-   cxx-networks
+   julia
 
 .. toctree::
    :maxdepth: 1
