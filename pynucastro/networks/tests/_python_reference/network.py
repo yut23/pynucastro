@@ -68,7 +68,7 @@ names.append("Mg23")
 def to_composition(Y):
     """Convert an array of molar fractions to a Composition object."""
     from pynucastro import Composition, Nucleus
-    nuclei = [Nucleus.from_cache(name) for name in names]
+    nuclei = Nucleus.cast_list(names)
     comp = Composition(nuclei)
     for i, nuc in enumerate(nuclei):
         comp.X[nuc] = Y[i] * A[i]
