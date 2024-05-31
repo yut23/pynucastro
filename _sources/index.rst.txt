@@ -22,6 +22,7 @@ codes.
    intro
    rate_types
    install
+   contributing
 
 .. toctree::
    :maxdepth: 1
@@ -55,7 +56,8 @@ codes.
    :maxdepth: 1
    :caption: Nuclear Statistical Equilibrium
 
-   NSE-example.ipynb
+   NSE-example
+   nse_table
 
 .. toctree::
    :maxdepth: 1
@@ -69,7 +71,6 @@ codes.
 
    networks
    cxx-networks
-   julia
 
 .. toctree::
    :maxdepth: 1
@@ -84,6 +85,7 @@ codes.
    citing
    API <modules>
    sources
+   zreferences
 
 Indices and tables
 ==================

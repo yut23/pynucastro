@@ -1,23 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Combining ReacLib Rates with Electron Capture Tables &mdash; pynucastro 1.6.0.post414+ge54ed8f documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
-      <link rel="stylesheet" href="_static/nbsphinx-code-cells.css" type="text/css" />
-      <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  <title>Combining ReacLib Rates with Electron Capture Tables &mdash; pynucastro 1.6.0.post452+g2aef908 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css" />
+      <link rel="stylesheet" type="text/css" href="_static/theme_overrides.css?v=2e394b92" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=db8b613c"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/documentation_options.js?v=901eff6f"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="_static/copybutton.js?v=f281be69"></script>
@@ -60,6 +62,7 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Overview of pynucastro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rate_types.html">Reaction Rate Types</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Exploring Networks in Python</span></p>
 <ul>
@@ -85,7 +88,8 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Nuclear Statistical Equilibrium</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="NSE-example.html">Nuclear Statistical Equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NSE-example.html">Solving for nuclear statistical equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nse_table.html">Creating an NSE table</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plasma Neutrinos</span></p>
 <ul>
@@ -95,7 +99,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="networks.html">Creating Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cxx-networks.html">AMReX Astro Microphysics Networks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="julia.html">Integrating using DifferentialEquations.jl</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Interfacing With Other Languages</span></p>
 <ul>
@@ -106,6 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="citing.html">Citing pynucastro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sources.html">Third Party Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zreferences.html">References</a></li>
 </ul>
 
         </div>
@@ -134,7 +138,7 @@
              
   <section id="Combining-ReacLib-Rates-with-Electron-Capture-Tables">
 <h1>Combining ReacLib Rates with Electron Capture Tables<a class="headerlink" href="#Combining-ReacLib-Rates-with-Electron-Capture-Tables" title="Link to this heading"></a></h1>
-<p>Here’s an example of using tabulated weak rates from Suzuki et a. (2016) together with rates from the ReacLib database.</p>
+<p>Here’s an example of using tabulated weak rates from <span id="id1">Suzuki <em>et al.</em> [<a class="reference internal" href="zreferences.html#id10" title="Toshio Suzuki, Hiroshi Toki, and Ken’ichi Nomoto. Electron-capture and β-decay rates for sd-shell nuclei in stellar environments relevant to high-density o–ne–mg cores. The Astrophysical Journal, 817(2):163, January 2016. doi:10.3847/0004-637X/817/2/163.">2016</a>]</span> together with rates from the ReacLib database.</p>
 <p>We’ll build a network suitable for e-capture supernovae.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -199,7 +203,7 @@ S32 ⟶ He4 + Si28               [Q =  -6.95 MeV] (S32 --&gt; He4 + Si28 &lt;ths
 S32 ⟶ p + P31                  [Q =  -8.86 MeV] (S32 --&gt; p + P31 &lt;il10_reaclib__reverse&gt;)
 </pre></div></div>
 </div>
-<p>Now let’s specify the weak rates we want from Suzuki et al. – these tables are included with pynucastro:</p>
+<p>Now let’s specify the weak rates we want from <span id="id2">Suzuki <em>et al.</em> [<a class="reference internal" href="zreferences.html#id10" title="Toshio Suzuki, Hiroshi Toki, and Ken’ichi Nomoto. Electron-capture and β-decay rates for sd-shell nuclei in stellar environments relevant to high-density o–ne–mg cores. The Astrophysical Journal, 817(2):163, January 2016. doi:10.3847/0004-637X/817/2/163.">2016</a>]</span> – these tables are included with pynucastro:</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
@@ -233,9 +237,9 @@ S32 ⟶ p + P31                  [Q =  -8.86 MeV] (S32 --&gt; p + P31 &lt;il10_r
 <div class="output_area docutils container">
 <div class="highlight"><pre>
 [F20 ⟶ Ne20 + e⁻ + 𝜈,
+ F20 + e⁻ ⟶ O20 + 𝜈,
  Ne20 + e⁻ ⟶ F20 + 𝜈,
- O20 ⟶ F20 + e⁻ + 𝜈,
- F20 + e⁻ ⟶ O20 + 𝜈]
+ O20 ⟶ F20 + e⁻ + 𝜈]
 </pre></div></div>
 </div>
 <p>These tables are in terms of <span class="math notranslate nohighlight">\(T\)</span> and <span class="math notranslate nohighlight">\(\rho Y_e\)</span>. We can easily plot the tabulated electron capture rates just like ReacLib rates:</p>
@@ -361,24 +365,24 @@ S32 ⟶ p + P31                  [Q =  -8.86 MeV] (S32 --&gt; p + P31 &lt;il10_r
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{Ne20 ⟶ He4 + O16: 4.631669519815501e-18,
- O16 + He4 ⟶ Ne20 + 𝛾: 2163.4896055892013,
- Ne20 + He4 ⟶ Mg24 + 𝛾: 470.4657166295948,
- Mg24 + He4 ⟶ Si28 + 𝛾: 65.33425925449087,
- Al27 + p ⟶ Si28 + 𝛾: 3786.5889540808494,
- Al27 + He4 ⟶ P31 + 𝛾: 0.057635811259143355,
- Si28 + He4 ⟶ S32 + 𝛾: 0.08322738610569617,
- P31 + p ⟶ S32 + 𝛾: 2375.130496403913,
- O16 + O16 ⟶ p + P31: 7.154939895463953e-17,
- O16 + O16 ⟶ He4 + Si28: 2.5949312230335836e-17,
- Mg24 + He4 ⟶ p + Al27: 0.2543862399303774,
- Al27 + p ⟶ He4 + Mg24: 5920.818449985262,
- Si28 + He4 ⟶ p + P31: 0.00019528201299493395,
- P31 + p ⟶ He4 + Si28: 5491.96044267561,
- F20 ⟶ Ne20 + e⁻ + 𝜈: 1.1430498548238452e-14,
- Ne20 + e⁻ ⟶ F20 + 𝜈: 4.310025562780197e-11,
- O20 ⟶ F20 + e⁻ + 𝜈: 2.688308786951096e-28,
- F20 + e⁻ ⟶ O20 + 𝜈: 4.212096660029043e-09}
+{Ne20 ⟶ He4 + O16: 4.6316695198155e-18,
+ O16 + He4 ⟶ Ne20 + 𝛾: 2163.4896055892,
+ Ne20 + He4 ⟶ Mg24 + 𝛾: 470.46571662959457,
+ Mg24 + He4 ⟶ Si28 + 𝛾: 65.33425925449085,
+ Al27 + p ⟶ Si28 + 𝛾: 3786.588954080847,
+ Al27 + He4 ⟶ P31 + 𝛾: 0.05763581125914332,
+ Si28 + He4 ⟶ S32 + 𝛾: 0.08322738610569612,
+ P31 + p ⟶ S32 + 𝛾: 2375.1304964039123,
+ O16 + O16 ⟶ p + P31: 7.15493989546395e-17,
+ O16 + O16 ⟶ He4 + Si28: 2.5949312230335824e-17,
+ Mg24 + He4 ⟶ p + Al27: 0.2543862399303773,
+ Al27 + p ⟶ He4 + Mg24: 5920.818449985259,
+ Si28 + He4 ⟶ p + P31: 0.00019528201299493384,
+ P31 + p ⟶ He4 + Si28: 5491.960442675607,
+ F20 ⟶ Ne20 + e⁻ + 𝜈: 1.143049854823845e-14,
+ F20 + e⁻ ⟶ O20 + 𝜈: 4.212096660029042e-09,
+ Ne20 + e⁻ ⟶ F20 + 𝜈: 4.3100255627801964e-11,
+ O20 ⟶ F20 + e⁻ + 𝜈: 2.688308786951095e-28}
 </pre></div></div>
 </div>
 <p>Additionally, we can see the specific energy generation rate for these conditions</p>
@@ -396,7 +400,7 @@ S32 ⟶ p + P31                  [Q =  -8.86 MeV] (S32 --&gt; p + P31 &lt;il10_r
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-9.667007169632369e+22
+9.667007169631513e+22
 </pre></div></div>
 </div>
 <div class="nbinput nblast docutils container">

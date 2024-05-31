@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="../../../">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>pynucastro.reduction.drgep &mdash; pynucastro 1.6.0.post414+ge54ed8f documentation</title>
-      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/copybutton.css" type="text/css" />
-      <link rel="stylesheet" href="../../../_static/theme_overrides.css" type="text/css" />
+  <title>pynucastro.reduction.drgep &mdash; pynucastro 1.6.0.post452+g2aef908 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/theme_overrides.css?v=2e394b92" />
+
+  
   <!--[if lt IE 9]>
     <script src="../../../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="../../../_static/jquery.js?v=5d32c60e"></script>
         <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="../../../_static/documentation_options.js?v=db8b613c"></script>
-        <script src="../../../_static/doctools.js?v=888ff710"></script>
+        <script src="../../../_static/documentation_options.js?v=901eff6f"></script>
+        <script src="../../../_static/doctools.js?v=9a2dae69"></script>
         <script src="../../../_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="../../../_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="../../../_static/copybutton.js?v=f281be69"></script>
@@ -54,6 +56,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../intro.html">Overview of pynucastro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../rate_types.html">Reaction Rate Types</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contributing.html">Contributing</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Exploring Networks in Python</span></p>
 <ul>
@@ -79,7 +82,8 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Nuclear Statistical Equilibrium</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../../../NSE-example.html">Nuclear Statistical Equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../NSE-example.html">Solving for nuclear statistical equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../nse_table.html">Creating an NSE table</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plasma Neutrinos</span></p>
 <ul>
@@ -89,7 +93,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../../../networks.html">Creating Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../cxx-networks.html">AMReX Astro Microphysics Networks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../julia.html">Integrating using DifferentialEquations.jl</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Interfacing With Other Languages</span></p>
 <ul>
@@ -100,6 +103,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../citing.html">Citing pynucastro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../modules.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../sources.html">Third Party Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../zreferences.html">References</a></li>
 </ul>
 
         </div>
@@ -129,6 +133,7 @@
   <h1>Source code for pynucastro.reduction.drgep</h1><div class="highlight"><pre>
 <span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
+<span class="kn">from</span> <span class="nn">pynucastro.nucdata</span> <span class="kn">import</span> <span class="n">Nucleus</span>
 <span class="kn">from</span> <span class="nn">pynucastro.reduction.reduction_utils</span> <span class="kn">import</span> <span class="p">(</span><span class="n">mpi_importer</span><span class="p">,</span>
                                                   <span class="n">mpi_numpy_decomp</span><span class="p">,</span> <span class="n">to_list</span><span class="p">)</span>
 
@@ -430,8 +435,7 @@
 <span class="k">def</span> <span class="nf">drgep</span><span class="p">(</span><span class="n">net</span><span class="p">,</span> <span class="n">conds</span><span class="p">,</span> <span class="n">targets</span><span class="p">,</span> <span class="n">tols</span><span class="p">,</span> <span class="n">returnobj</span><span class="o">=</span><span class="s1">&#39;net&#39;</span><span class="p">,</span> <span class="n">use_mpi</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">use_numpy</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Implementation of Directed Relation Graph with Error Propagation (DRGEP) reduction</span>
-<span class="sd">    method described in Pepiot-Desjardins and Pitch 2008 (doi:10.1016/j.combustflame.2007.10.020)</span>
-<span class="sd">    and Niemeyer and Sung 2011 (doi:10.1016/j.combustflame.2010.12.010).</span>
+<span class="sd">    method described in :cite:t:`pepiot-desjardins:2008` and :cite:t:`niemeyer:2011`.</span>
 
 <span class="sd">    :param net: The network (RateCollection) to reduce.</span>
 <span class="sd">    :param conds: A set of conditions to reduce over. Should either be a sequence of (composition,</span>
@@ -440,7 +444,7 @@
 <span class="sd">        latter case, the sequences will be permuted to create the dataset. The compositions should</span>
 <span class="sd">        be pynucastro Composition objects.</span>
 <span class="sd">    :param targets: A collection of target nuclei (or a single target nucleus) to run the</span>
-<span class="sd">        graph search algorithm from. Should be supplied as pynucastro Nucleus objects.</span>
+<span class="sd">        graph search algorithm from. Should be supplied as pynucastro Nucleus objects or strings.</span>
 <span class="sd">    :param tols: Tolerance(s) or cutoff threshold(s) to use for paths from each of the target nuclei.</span>
 <span class="sd">        Nuclei whose interaction coefficients do not meet the specified tolerance will have their</span>
 <span class="sd">        interaction coefficients set to 0.0. Can be a single number (will be the same for all targets)</span>
@@ -463,7 +467,7 @@
 
     <span class="k">if</span> <span class="n">returnobj</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s1">&#39;net&#39;</span><span class="p">,</span> <span class="s1">&#39;nuclei&#39;</span><span class="p">,</span> <span class="s1">&#39;coeff&#39;</span><span class="p">}:</span>
         <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Invalid &#39;returnobj&#39; argument: &#39;</span><span class="si">{</span><span class="n">returnobj</span><span class="si">}</span><span class="s2">&#39;.&quot;</span><span class="p">)</span>
-    <span class="n">targets</span> <span class="o">=</span> <span class="n">to_list</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span>
+    <span class="n">targets</span> <span class="o">=</span> <span class="n">Nucleus</span><span class="o">.</span><span class="n">cast_list</span><span class="p">(</span><span class="n">targets</span><span class="p">)</span>
     <span class="n">tols</span> <span class="o">=</span> <span class="n">to_list</span><span class="p">(</span><span class="n">tols</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">targets</span><span class="p">))</span>
 
     <span class="c1">#-------------------------------------------------------</span>

@@ -1,23 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Nuclear Statistical Equilibrium &mdash; pynucastro 1.6.0.post414+ge54ed8f documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
-      <link rel="stylesheet" href="_static/nbsphinx-code-cells.css" type="text/css" />
-      <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  <title>Solving for nuclear statistical equilibrium &mdash; pynucastro 1.6.0.post452+g2aef908 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css" />
+      <link rel="stylesheet" type="text/css" href="_static/theme_overrides.css?v=2e394b92" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=db8b613c"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/documentation_options.js?v=901eff6f"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="_static/copybutton.js?v=f281be69"></script>
@@ -28,7 +30,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="Neutrino Cooling" href="neutrino-cooling.html" />
+    <link rel="next" title="Creating an NSE table" href="nse_table.html" />
     <link rel="prev" title="Reverse Rates" href="partition-function.html" /> 
 </head>
 
@@ -60,6 +62,7 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Overview of pynucastro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rate_types.html">Reaction Rate Types</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Exploring Networks in Python</span></p>
 <ul>
@@ -85,7 +88,8 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Nuclear Statistical Equilibrium</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Nuclear Statistical Equilibrium</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Solving for nuclear statistical equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nse_table.html">Creating an NSE table</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plasma Neutrinos</span></p>
 <ul>
@@ -95,7 +99,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="networks.html">Creating Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cxx-networks.html">AMReX Astro Microphysics Networks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="julia.html">Integrating using DifferentialEquations.jl</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Interfacing With Other Languages</span></p>
 <ul>
@@ -106,6 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="citing.html">Citing pynucastro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sources.html">Third Party Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zreferences.html">References</a></li>
 </ul>
 
         </div>
@@ -122,7 +126,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
-      <li class="breadcrumb-item active">Nuclear Statistical Equilibrium</li>
+      <li class="breadcrumb-item active">Solving for nuclear statistical equilibrium</li>
       <li class="wy-breadcrumbs-aside">
               <a href="https://github.com/pynucastro/pynucastro/blob/main/docs/source/NSE-example.ipynb" class="fa fa-github"> Edit on GitHub</a>
       </li>
@@ -132,11 +136,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="Nuclear-Statistical-Equilibrium">
-<h1>Nuclear Statistical Equilibrium<a class="headerlink" href="#Nuclear-Statistical-Equilibrium" title="Link to this heading"></a></h1>
+  <section id="Solving-for-nuclear-statistical-equilibrium">
+<h1>Solving for nuclear statistical equilibrium<a class="headerlink" href="#Solving-for-nuclear-statistical-equilibrium" title="Link to this heading"></a></h1>
 <p>pynucastro is able to calculate the abundances at nuclear statistical equilibrium of a given reaction network.</p>
-<p>The constrained equations are setup following: * Calder et al. (2007): <a class="reference external" href="https://iopscience.iop.org/article/10.1086/510709/pdf">https://iopscience.iop.org/article/10.1086/510709/pdf</a> * Seitenzahl et al. (2009): <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0092640X0800051X">https://www.sciencedirect.com/science/article/pii/S0092640X0800051X</a></p>
-<p>and solved using <code class="docutils literal notranslate"><span class="pre">scipy.optimize.fsolve()</span></code></p>
+<p>The constrained equations are setup following <span id="id1">Calder <em>et al.</em> [<a class="reference internal" href="zreferences.html#id7" title="A. C. Calder, D. M. Townsley, I. R. Seitenzahl, F. Peng, O. E. B. Messer, N. Vladimirova, E. F. Brown, J. W. Truran, and D. Q. Lamb. Capturing the fire: flame energetics and neutronization for type ia supernova simulations. The Astrophysical Journal, 656(1):313–332, February 2007. doi:10.1086/510709.">2007</a>]</span> and <span id="id2">Seitenzahl <em>et al.</em> [<a class="reference internal" href="zreferences.html#id11" title="Ivo R. Seitenzahl, Dean M. Townsley, Fang Peng, and James W. Truran. Nuclear statistical equilibrium for type ia supernova simulations. Atomic Data and Nuclear Data Tables, 95(1):96-114, 2009. doi:10.1016/j.adt.2008.08.001.">2009</a>]</span> and solved using <code class="docutils literal notranslate"><span class="pre">scipy.optimize.fsolve()</span></code>.</p>
 <p>Here we show how to find the NSE state of a set of nuclei.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
@@ -279,7 +282,7 @@ After solving, the chemical potential for proton and neutron are -7.738608573873
 <span class="n">ax</span><span class="o">.</span><span class="n">set_yscale</span><span class="p">(</span><span class="s1">&#39;log&#39;</span><span class="p">)</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">([</span><span class="n">low_limit</span><span class="p">,</span><span class="mf">1.1</span><span class="p">])</span>
 <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">rf</span><span class="s2">&quot;$Y_e = </span><span class="si">{</span><span class="n">ye</span><span class="si">}</span><span class="s2">$, $\rho = </span><span class="si">{</span><span class="n">rho</span><span class="si">:</span><span class="s2">6.3g</span><span class="si">}</span><span class="s2">$&quot;</span><span class="p">)</span>
-<br/></pre></div>
+</pre></div>
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -298,7 +301,7 @@ Text(0.5, 1.0, &#39;$Y_e = 0.5$, $\\rho =  1e+07$&#39;)
 <img alt="_images/NSE-example_10_1.png" src="_images/NSE-example_10_1.png" />
 </div>
 </div>
-<p>For <span class="math notranslate nohighlight">\(\rho = 10^7~\mathrm{g~cm^{-3}}\)</span> and a relatively high temperature of $ T = 6 <span class="math">\times 10`^9~:nbsphinx-math:</span>mathrm{K}`$, we can look at how the NSE state changes with varying <span class="math notranslate nohighlight">\(Y_e\)</span>.</p>
+<p>For <span class="math notranslate nohighlight">\(\rho = 10^7~\mathrm{g~cm^{-3}}\)</span> and a relatively high temperature of <span class="math notranslate nohighlight">\(T = 6 \times 10^9~\mathrm{K}\)</span>, we can look at how the NSE state changes with varying <span class="math notranslate nohighlight">\(Y_e\)</span>.</p>
 <p>Note: there will be a lowest <span class="math notranslate nohighlight">\(Y_e\)</span> that is attainable by the network, depending on what species are represented. As long as protons are in the network, we can reach a <span class="math notranslate nohighlight">\(Y_e\)</span> of <span class="math notranslate nohighlight">\(1\)</span>.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
@@ -372,7 +375,7 @@ Text(0.5, 1.0, &#39;$\\rho =  1e+07$ and $T= 6e+09$&#39;)
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="partition-function.html" class="btn btn-neutral float-left" title="Reverse Rates" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="neutrino-cooling.html" class="btn btn-neutral float-right" title="Neutrino Cooling" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="nse_table.html" class="btn btn-neutral float-right" title="Creating an NSE table" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

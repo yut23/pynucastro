@@ -1,23 +1,25 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en" data-content_root="./">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Tabulated Weak Rate Example &mdash; pynucastro 1.6.0.post414+ge54ed8f documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-      <link rel="stylesheet" href="_static/copybutton.css" type="text/css" />
-      <link rel="stylesheet" href="_static/nbsphinx-code-cells.css" type="text/css" />
-      <link rel="stylesheet" href="_static/theme_overrides.css" type="text/css" />
+  <title>Tabulated Weak Rate Example &mdash; pynucastro 1.6.0.post452+g2aef908 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=fa44fd50" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+      <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+      <link rel="stylesheet" type="text/css" href="_static/nbsphinx-code-cells.css" />
+      <link rel="stylesheet" type="text/css" href="_static/theme_overrides.css?v=2e394b92" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
-        <script src="_static/documentation_options.js?v=db8b613c"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/documentation_options.js?v=901eff6f"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
         <script src="_static/clipboard.min.js?v=a7894cd8"></script>
         <script src="_static/copybutton.js?v=f281be69"></script>
@@ -60,6 +62,7 @@
 <li class="toctree-l1"><a class="reference internal" href="intro.html">Overview of pynucastro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="rate_types.html">Reaction Rate Types</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Exploring Networks in Python</span></p>
 <ul>
@@ -85,7 +88,8 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Nuclear Statistical Equilibrium</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="NSE-example.html">Nuclear Statistical Equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="NSE-example.html">Solving for nuclear statistical equilibrium</a></li>
+<li class="toctree-l1"><a class="reference internal" href="nse_table.html">Creating an NSE table</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Plasma Neutrinos</span></p>
 <ul>
@@ -95,7 +99,6 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="networks.html">Creating Networks</a></li>
 <li class="toctree-l1"><a class="reference internal" href="cxx-networks.html">AMReX Astro Microphysics Networks</a></li>
-<li class="toctree-l1"><a class="reference internal" href="julia.html">Integrating using DifferentialEquations.jl</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Interfacing With Other Languages</span></p>
 <ul>
@@ -106,6 +109,7 @@
 <li class="toctree-l1"><a class="reference internal" href="citing.html">Citing pynucastro</a></li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">API</a></li>
 <li class="toctree-l1"><a class="reference internal" href="sources.html">Third Party Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zreferences.html">References</a></li>
 </ul>
 
         </div>
@@ -142,7 +146,7 @@
 \end{align*}</span></p>
 <p>where <span class="math notranslate nohighlight">\(Y_\mathrm{Ni}\)</span> and <span class="math notranslate nohighlight">\(Y_\mathrm{Co}\)</span> are the molar fractions of the nuclei.</p>
 <p>Let’s create a network with these rates.</p>
-<p>pynucastro will use the tabulated rates from <a class="reference external" href="https://www.sciencedirect.com/science/article/abs/pii/S0092640X01908654">Langanke &amp; Martinex-Pinedo (2001)</a>.</p>
+<p>pynucastro will use the tabulated rates from <span id="id1">Langanke and Martínez-Pinedo [<a class="reference internal" href="zreferences.html#id9" title="K. Langanke and G. Martínez-Pinedo. Rate tables for the weak processes of pf-shell nuclei in stellar environments. Atomic Data and Nuclear Data Tables, 79(1):1-46, 2001. doi:10.1006/adnd.2001.0865.">2001</a>]</span>.</p>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
@@ -261,8 +265,8 @@ Co56 ⟶ Ni56 + e⁻ + 𝜈           [Q =  -2.92 MeV] (Co56 --&gt; Ni56 &lt;tab
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-{Ni56 + e⁻ ⟶ Co56 + 𝜈: 7.240723730837853e-06,
- Co56 ⟶ Ni56 + e⁻ + 𝜈: 2.6914293082016787e-23}
+{Co56 ⟶ Ni56 + e⁻ + 𝜈: 2.6914293082016787e-23,
+ Ni56 + e⁻ ⟶ Co56 + 𝜈: 7.240723730837853e-06}
 </pre></div></div>
 </div>
 <div class="nbinput docutils container">
@@ -283,7 +287,7 @@ Co56 ⟶ Ni56 + e⁻ + 𝜈           [Q =  -2.92 MeV] (Co56 --&gt; Ni56 &lt;tab
 {Co56: 7.240723730837853e-06, Ni56: -7.240723730837853e-06}
 </pre></div></div>
 </div>
-<p>If we look at the original tables from Langanke &amp; Martinex-Pinedo (2001), they tabulate (for the conditions we selected above):</p>
+<p>If we look at the original tables from <span id="id2">Langanke and Martínez-Pinedo [<a class="reference internal" href="zreferences.html#id9" title="K. Langanke and G. Martínez-Pinedo. Rate tables for the weak processes of pf-shell nuclei in stellar environments. Atomic Data and Nuclear Data Tables, 79(1):1-46, 2001. doi:10.1006/adnd.2001.0865.">2001</a>]</span>, they tabulate (for the conditions we selected above):</p>
 <div class="highlight-none notranslate"><div class="highlight"><pre><span></span> neg. daughter Ni56 z=28 n=28 a=56 Q= -1.6240
  pos. daughter Co56 z=27 n=29 a=56 Q=  1.6240
                       +++ Ni56 --&gt; Co56 +++      --- Co56 --&gt; Ni56 ---
